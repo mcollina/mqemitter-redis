@@ -1,0 +1,37 @@
+{
+  "name": "mqemitter-redis",
+  "version": "0.1.0",
+  "description": "Redis-based MQEmitter",
+  "main": "mqemitter-redis.js",
+  "dependencies": {
+    "faucet": "^0.0.1",
+    "inherits": "^2.0.1",
+    "mqemitter": "^0.2.1",
+    "redis": "^0.12.1",
+    "shortid": "^2.0.1",
+    "lru-cache": "~2.5.0",
+    "tape": "^2.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "tape test.js | faucet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcollina/mqemitter-redis.git"
+  },
+  "keywords": [
+    "redis",
+    "mqemitter",
+    "emitter",
+    "pubsub",
+    "publish",
+    "subscribe"
+  ],
+  "author": "Matteo Collina <hello@matteocollina.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcollina/mqemitter-redis/issues"
+  },
+  "homepage": "https://github.com/mcollina/mqemitter-redis"
+}
