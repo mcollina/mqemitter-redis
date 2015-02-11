@@ -34,11 +34,11 @@ function MQEmitterRedis(opts) {
   }
 
   this.subConn.on("message", function (topic, message) {
-    handler(topic, topic, message);
+    handler(topic, topic, message)
   })
 
   this.subConn.on("pmessage", function(sub, topic, message) {
-    handler(sub, topic, message);
+    handler(sub, topic, message)
   })
 
   MQEmitter.call(this, opts)
@@ -52,13 +52,13 @@ function createConn(opts) {
                                 opts.redis)
 
   if (opts.password !== undefined) {
-    conn.auth(opts.password);
+    conn.auth(opts.password)
   }
 
-  conn.select(opts.db || 0);
-  conn.retry_backoff = 5;
+  conn.select(opts.db || 0)
+  conn.retry_backoff = 5
 
-  return conn;
+  return conn
 }
 
 ['emit', 'on', 'removeListener', 'close'].forEach(function(name) {
@@ -88,22 +88,28 @@ MQEmitterRedis.prototype._subTopic = function(topic) {
                .replace(this._opts.wildcardSome, '*')
 }
 
-MQEmitterRedis.prototype.on = function on(topic, cb) {
+MQEmitterRedis.prototype.on = function on(topic, cb, done) {
   var subTopic = this._subTopic(topic)
+  var onFinish = function() {
+    if (done) {
+      setImmediate(done)
+    }
+  }
 
   this._on(topic, cb)
 
   if (this._topics[subTopic]) {
     this._topics[subTopic]++
+    onFinish()
     return this
   }
 
   this._topics[subTopic] = 1
 
   if (this._containsWildcard(topic)) {
-    this.subConn.psubscribe(subTopic);
+    this.subConn.psubscribe(subTopic, onFinish)
   } else {
-    this.subConn.subscribe(subTopic);
+    this.subConn.subscribe(subTopic, onFinish)
   }
 
   return this
@@ -119,24 +125,33 @@ MQEmitterRedis.prototype.emit = function emit(msg, done) {
   }
 
   this.pubConn.publish(msg.topic, JSON.stringify(packet), function() {
-    setImmediate(done);
-  });
+    if (done) {
+      setImmediate(done)
+    }
+  })
 }
 
-MQEmitterRedis.prototype.removeListener = function removeListener(topic, cb) {
+MQEmitterRedis.prototype.removeListener = function removeListener(topic, cb, done) {
   var subTopic = this._subTopic(topic)
+  var onFinish = function() {
+    if (done) {
+      setImmediate(done)
+    }
+  }
 
   this._removeListener(topic, cb)
 
-  if (--this._topics[subTopic] > 0)
+  if (--this._topics[subTopic] > 0) {
+    onFinish()
     return this
+  }
 
   delete this._topics[subTopic]
 
   if (this._containsWildcard(topic)) {
-    this.subConn.punsubscribe(subTopic);
+    this.subConn.punsubscribe(subTopic, onFinish)
   } else if (this._matcher.match(topic)) {
-    this.subConn.unsubscribe(subTopic);
+    this.subConn.unsubscribe(subTopic, onFinish)
   }
 
   return this
@@ -144,7 +159,7 @@ MQEmitterRedis.prototype.removeListener = function removeListener(topic, cb) {
 
 MQEmitterRedis.prototype._containsWildcard = function(topic) {
   return (topic.indexOf(this._opts.wildcardOne) >= 0) ||
-         (topic.indexOf(this._opts.wildcardSome) >= 0);
+         (topic.indexOf(this._opts.wildcardSome) >= 0)
 }
 
 module.exports = MQEmitterRedis

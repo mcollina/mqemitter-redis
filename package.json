@@ -5,7 +5,7 @@
   "main": "mqemitter-redis.js",
   "dependencies": {
     "inherits": "^2.0.1",
-    "mqemitter": "^0.2.1",
+    "mqemitter": "^0.3.0",
     "redis": "^0.12.1",
     "shortid": "^2.0.1",
     "lru-cache": "~2.5.0"
