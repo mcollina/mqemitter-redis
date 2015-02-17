@@ -20,7 +20,7 @@ function MQEmitterRedis(opts) {
   this._topics  = {}
 
   this._cache   = LRU({
-                      max: 100000
+                      max: 10000
                     , maxAge: 60 * 1000 // one minute
                   })
 
