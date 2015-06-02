@@ -1,43 +1,44 @@
+'use strict'
 
-var redis     = require('redis')
-  , MQEmitter = require('mqemitter')
-  , shortid   = require('shortid')
-  , inherits  = require('inherits')
-  , LRU       = require("lru-cache")
+var redis = require('redis')
+var MQEmitter = require('mqemitter')
+var shortid = require('shortid')
+var inherits = require('inherits')
+var LRU = require('lru-cache')
 
-function MQEmitterRedis(opts) {
+function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
     return new MQEmitterRedis(opts)
   }
 
-  opts          = opts || {}
+  opts = opts || {}
+  this._opts = opts
 
-  this._opts    = opts
+  this.subConn = createConn(opts)
+  this.pubConn = createConn(opts)
 
-  this.subConn  = createConn(opts)
-  this.pubConn  = createConn(opts)
+  this._topics = {}
 
-  this._topics  = {}
+  this._cache = LRU({
+    max: 10000,
+    maxAge: 60 * 1000 // one minute
+  })
 
-  this._cache   = LRU({
-                      max: 10000
-                    , maxAge: 60 * 1000 // one minute
-                  })
+  var that = this
 
-  var that      = this
-
-  function handler(sub, topic, payload) {
+  function handler (sub, topic, payload) {
     var packet = JSON.parse(payload)
-    if (!that._cache.get(packet.id))
+    if (!that._cache.get(packet.id)) {
       that._emit(packet.msg)
+    }
     that._cache.set(packet.id, true)
   }
 
-  this.subConn.on("message", function (topic, message) {
+  this.subConn.on('message', function (topic, message) {
     handler(topic, topic, message)
   })
 
-  this.subConn.on("pmessage", function(sub, topic, message) {
+  this.subConn.on('pmessage', function (sub, topic, message) {
     handler(sub, topic, message)
   })
 
@@ -46,7 +47,7 @@ function MQEmitterRedis(opts) {
 
 inherits(MQEmitterRedis, MQEmitter)
 
-function createConn(opts) {
+function createConn (opts) {
   var conn = redis.createClient(opts.port || null,
                                 opts.host || null,
                                 opts.redis)
@@ -61,17 +62,18 @@ function createConn(opts) {
   return conn
 }
 
-['emit', 'on', 'removeListener', 'close'].forEach(function(name) {
+['emit', 'on', 'removeListener', 'close'].forEach(function (name) {
   MQEmitterRedis.prototype['_' + name] = MQEmitterRedis.prototype[name]
 })
 
-MQEmitterRedis.prototype.close = function close(cb) {
+MQEmitterRedis.prototype.close = function (cb) {
   var count = 2
-    , that  = this
+  var that = this
 
-  function onEnd() {
-    if (--count === 0)
+  function onEnd () {
+    if (--count === 0) {
       that._close(cb)
+    }
   }
 
   this.subConn.on('end', onEnd)
@@ -83,14 +85,14 @@ MQEmitterRedis.prototype.close = function close(cb) {
   return this
 }
 
-MQEmitterRedis.prototype._subTopic = function(topic) {
-   return topic.replace(this._opts.wildcardOne, '*')
-               .replace(this._opts.wildcardSome, '*')
+MQEmitterRedis.prototype._subTopic = function (topic) {
+  return topic.replace(this._opts.wildcardOne, '*')
+              .replace(this._opts.wildcardSome, '*')
 }
 
-MQEmitterRedis.prototype.on = function on(topic, cb, done) {
+MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   var subTopic = this._subTopic(topic)
-  var onFinish = function() {
+  var onFinish = function () {
     if (done) {
       setImmediate(done)
     }
@@ -115,25 +117,26 @@ MQEmitterRedis.prototype.on = function on(topic, cb, done) {
   return this
 }
 
-MQEmitterRedis.prototype.emit = function emit(msg, done) {
-  if (this.closed)
+MQEmitterRedis.prototype.emit = function (msg, done) {
+  if (this.closed) {
     return done(new Error('mqemitter-redis is closed'))
-
-  var packet = {
-      id: shortid()
-    , msg: msg
   }
 
-  this.pubConn.publish(msg.topic, JSON.stringify(packet), function() {
+  var packet = {
+    id: shortid(),
+    msg: msg
+  }
+
+  this.pubConn.publish(msg.topic, JSON.stringify(packet), function () {
     if (done) {
       setImmediate(done)
     }
   })
 }
 
-MQEmitterRedis.prototype.removeListener = function removeListener(topic, cb, done) {
+MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
   var subTopic = this._subTopic(topic)
-  var onFinish = function() {
+  var onFinish = function () {
     if (done) {
       setImmediate(done)
     }
@@ -157,7 +160,7 @@ MQEmitterRedis.prototype.removeListener = function removeListener(topic, cb, don
   return this
 }
 
-MQEmitterRedis.prototype._containsWildcard = function(topic) {
+MQEmitterRedis.prototype._containsWildcard = function (topic) {
   return (topic.indexOf(this._opts.wildcardOne) >= 0) ||
          (topic.indexOf(this._opts.wildcardSome) >= 0)
 }
