@@ -23,7 +23,7 @@ Example
 var redis = require('mqemitter-redis')
 var mq = redis({
   port: 12345,
-  localhost: 12.34.56.78,
+  host: '12.34.56.78',
   password: 'my secret',
   db: 4
 })
@@ -43,6 +43,17 @@ mq.emit(msg, function () {
   // emitter will never return an error
 })
 ```
+
+## API
+
+<a name="constructor"></a>
+### MQEmitterRedis([opts])
+
+Creates a new instance of mqemitter-redis.
+It takes all the same options of [ioredis](http://npm.im/ioredis),
+which is used internally to connect to Redis.
+
+This constructor creates two connections to Redis.
 
 Acknowledgements
 ----------------
