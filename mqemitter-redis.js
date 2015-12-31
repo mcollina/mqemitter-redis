@@ -1,10 +1,11 @@
 'use strict'
 
-var redis = require('redis')
+var Redis = require('ioredis')
 var MQEmitter = require('mqemitter')
 var shortid = require('shortid')
 var inherits = require('inherits')
 var LRU = require('lru-cache')
+var msgpack = require('msgpack-lite')
 
 function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
@@ -14,8 +15,8 @@ function MQEmitterRedis (opts) {
   opts = opts || {}
   this._opts = opts
 
-  this.subConn = createConn(opts)
-  this.pubConn = createConn(opts)
+  this.subConn = new Redis(opts)
+  this.pubConn = new Redis(opts)
 
   this._topics = {}
 
@@ -27,18 +28,18 @@ function MQEmitterRedis (opts) {
   var that = this
 
   function handler (sub, topic, payload) {
-    var packet = JSON.parse(payload)
+    var packet = msgpack.decode(payload)
     if (!that._cache.get(packet.id)) {
       that._emit(packet.msg)
     }
     that._cache.set(packet.id, true)
   }
 
-  this.subConn.on('message', function (topic, message) {
+  this.subConn.on('messageBuffer', function (topic, message) {
     handler(topic, topic, message)
   })
 
-  this.subConn.on('pmessage', function (sub, topic, message) {
+  this.subConn.on('pmessageBuffer', function (sub, topic, message) {
     handler(sub, topic, message)
   })
 
@@ -47,22 +48,7 @@ function MQEmitterRedis (opts) {
 
 inherits(MQEmitterRedis, MQEmitter)
 
-function createConn (opts) {
-  var conn = redis.createClient(opts.port || null,
-                                opts.host || null,
-                                opts.redis)
-
-  if (opts.password !== undefined) {
-    conn.auth(opts.password)
-  }
-
-  conn.select(opts.db || 0)
-  conn.retry_backoff = 5
-
-  return conn
-}
-
-['emit', 'on', 'removeListener', 'close'].forEach(function (name) {
+;['emit', 'on', 'removeListener', 'close'].forEach(function (name) {
   MQEmitterRedis.prototype['_' + name] = MQEmitterRedis.prototype[name]
 })
 
@@ -127,11 +113,10 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     msg: msg
   }
 
-  this.pubConn.publish(msg.topic, JSON.stringify(packet), function () {
-    if (done) {
-      setImmediate(done)
-    }
-  })
+  this.pubConn.publish(msg.topic, msgpack.encode(packet))
+  if (done) {
+    setImmediate(done)
+  }
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {

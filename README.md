@@ -27,7 +27,7 @@ var mq = redis({
   password: 'my secret',
   db: 4
 })
-var msg   = {
+var msg = {
   topic: 'hello world'
   payload: 'or any other fields'
 }
