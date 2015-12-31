@@ -1,13 +1,13 @@
 {
   "name": "mqemitter-redis",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "dependencies": {
     "inherits": "^2.0.1",
     "ioredis": "^1.13.2",
     "lru-cache": "^4.0.0",
-    "mqemitter": "^0.5.0",
+    "mqemitter": "^1.0.0",
     "msgpack-lite": "^0.1.14",
     "shortid": "^2.2.2"
   },
