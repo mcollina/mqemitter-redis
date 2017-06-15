@@ -5,8 +5,8 @@
   "main": "mqemitter-redis.js",
   "dependencies": {
     "inherits": "^2.0.1",
-    "ioredis": "^2.5.0",
-    "lru-cache": "^4.0.0",
+    "ioredis": "^3.0.0",
+    "lru-cache": "^4.1.1",
     "mqemitter": "^2.0.0",
     "msgpack-lite": "^0.1.14",
     "shortid": "^2.2.2"
@@ -14,7 +14,7 @@
   "devDependencies": {
     "faucet": "^0.0.1",
     "pre-commit": "^1.0.7",
-    "standard": "^10.0.0",
+    "standard": "^10.0.2",
     "tape": "^4.0.0"
   },
   "scripts": {

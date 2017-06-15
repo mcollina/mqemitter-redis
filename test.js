@@ -57,8 +57,8 @@ test('ioredis error event', function (t) {
 
   t.plan(1)
 
-  e.state.on('error', function (err) {
-    t.deepEqual(err.message.substr(0, 14), 'connect EINVAL')
+  e.state.once('error', function (err) {
+    t.deepEqual(err.message.substr(0, 14), 'connect EHOSTU')
     e.close(function () {
       t.end()
     })
