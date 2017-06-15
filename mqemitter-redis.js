@@ -6,6 +6,7 @@ var shortid = require('shortid')
 var inherits = require('inherits')
 var LRU = require('lru-cache')
 var msgpack = require('msgpack-lite')
+var EE = require('events').EventEmitter
 
 function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
@@ -25,6 +26,8 @@ function MQEmitterRedis (opts) {
     maxAge: 60 * 1000 // one minute
   })
 
+  this.state = new EE()
+
   var that = this
 
   function handler (sub, topic, payload) {
@@ -41,6 +44,22 @@ function MQEmitterRedis (opts) {
 
   this.subConn.on('pmessageBuffer', function (sub, topic, message) {
     handler(sub, topic, message)
+  })
+
+  this.subConn.on('connect', function () {
+    that.state.emit('subConnect')
+  })
+
+  this.subConn.on('error', function (err) {
+    that.state.emit('subError', err)
+  })
+
+  this.pubConn.on('connect', function () {
+    that.state.emit('pubConnect')
+  })
+
+  this.pubConn.on('error', function (err) {
+    that.state.emit('pubError', err)
   })
 
   MQEmitter.call(this, opts)
