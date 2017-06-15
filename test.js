@@ -55,28 +55,12 @@ test('ioredis connect event', function (t) {
 test('ioredis error event', function (t) {
   var e = redis({host: '127'})
 
-  t.plan(2)
+  t.plan(1)
 
-  var subErrorEventReceived = false
-  var pubErrorEventReceived = false
-
-  e.state.on('pubError', function (err) {
+  e.state.on('error', function (err) {
     t.deepEqual(err.message.substr(0, 14), 'connect EINVAL')
-    pubErrorEventReceived = true
-    newErrorEvent()
+    e.close(function () {
+      t.end()
+    })
   })
-
-  e.state.on('subError', function (err) {
-    t.deepEqual(err.message.substr(0, 14), 'connect EINVAL')
-    subErrorEventReceived = true
-    newErrorEvent()
-  })
-
-  function newErrorEvent () {
-    if (subErrorEventReceived && pubErrorEventReceived) {
-      e.close(function () {
-        t.end()
-      })
-    }
-  }
 })
