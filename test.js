@@ -64,3 +64,20 @@ test('ioredis error event', function (t) {
     })
   })
 })
+
+test('topic pattern adapter', function (t) {
+  var e = redis()
+
+  var mqttTopic = 'rooms/+/devices/+/status'
+  var expectedRedisPattern = 'rooms/*/devices/*/status'
+
+  var subTopic = e._subTopic(mqttTopic)
+
+  t.plan(1)
+
+  t.deepEqual(subTopic, expectedRedisPattern)
+
+  e.close(function () {
+    t.end()
+  })
+})
