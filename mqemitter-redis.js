@@ -91,7 +91,7 @@ MQEmitterRedis.prototype.close = function (cb) {
 }
 
 MQEmitterRedis.prototype._subTopic = function (topic) {
-  return topic.replace(this._opts.wildcardOne, '*')
+  return topic.replace(new RegExp(this._opts.wildcardOne.replace(/([/,!\\^${}[\]().*+?|<>\-&])/g, '\\$&'), 'g'), '*')
               .replace(this._opts.wildcardSome, '*')
 }
 
