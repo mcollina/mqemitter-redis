@@ -4,12 +4,12 @@
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "dependencies": {
+    "hyperid": "^1.4.1",
     "inherits": "^2.0.1",
     "ioredis": "^3.0.0",
     "lru-cache": "^4.1.1",
     "mqemitter": "^2.0.0",
-    "msgpack-lite": "^0.1.14",
-    "shortid": "^2.2.2"
+    "msgpack-lite": "^0.1.14"
   },
   "devDependencies": {
     "faucet": "^0.0.1",
