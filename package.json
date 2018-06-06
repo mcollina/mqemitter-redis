@@ -1,21 +1,22 @@
 {
   "name": "mqemitter-redis",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "dependencies": {
     "hyperid": "^1.4.1",
     "inherits": "^2.0.1",
-    "ioredis": "^3.0.0",
+    "ioredis": "^3.2.2",
     "lru-cache": "^4.1.1",
-    "mqemitter": "^2.0.0",
+    "mqemitter": "^2.2.0",
     "msgpack-lite": "^0.1.14"
   },
   "devDependencies": {
     "faucet": "^0.0.1",
     "pre-commit": "^1.0.7",
-    "standard": "^10.0.2",
-    "tape": "^4.0.0"
+    "safe-buffer": "^5.1.1",
+    "standard": "^10.0.3",
+    "tape": "^4.8.0"
   },
   "scripts": {
     "test": "standard && tape test.js | faucet"
