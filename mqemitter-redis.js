@@ -2,7 +2,7 @@
 
 var Redis = require('ioredis')
 var MQEmitter = require('mqemitter')
-var shortid = require('shortid')
+var hyperid = require('hyperid')()
 var inherits = require('inherits')
 var LRU = require('lru-cache')
 var msgpack = require('msgpack-lite')
@@ -99,26 +99,22 @@ MQEmitterRedis.prototype._subTopic = function (topic) {
 
 MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   var subTopic = this._subTopic(topic)
-  var onFinish = function () {
-    if (done) {
-      setImmediate(done)
-    }
-  }
+  done = done || function () {}
 
   this._on(topic, cb)
 
   if (this._topics[subTopic]) {
     this._topics[subTopic]++
-    onFinish()
+    done()
     return this
   }
 
   this._topics[subTopic] = 1
 
   if (this._containsWildcard(topic)) {
-    this.subConn.psubscribe(subTopic, onFinish)
+    this.subConn.psubscribe(subTopic, done)
   } else {
-    this.subConn.subscribe(subTopic, onFinish)
+    this.subConn.subscribe(subTopic, done)
   }
 
   return this
@@ -130,37 +126,31 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
   }
 
   var packet = {
-    id: shortid(),
+    id: hyperid(),
     msg: msg
   }
 
   this.pubConn.publish(msg.topic, msgpack.encode(packet))
-  if (done) {
-    setImmediate(done)
-  }
+  done && done()
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
   var subTopic = this._subTopic(topic)
-  var onFinish = function () {
-    if (done) {
-      setImmediate(done)
-    }
-  }
+  done = done || function () {}
 
   this._removeListener(topic, cb)
 
   if (--this._topics[subTopic] > 0) {
-    onFinish()
+    done()
     return this
   }
 
   delete this._topics[subTopic]
 
   if (this._containsWildcard(topic)) {
-    this.subConn.punsubscribe(subTopic, onFinish)
+    this.subConn.punsubscribe(subTopic, done)
   } else if (this._matcher.match(topic)) {
-    this.subConn.unsubscribe(subTopic, onFinish)
+    this.subConn.unsubscribe(subTopic, done)
   }
 
   return this
