@@ -2,7 +2,7 @@
 
 var Redis = require('ioredis')
 var MQEmitter = require('mqemitter')
-var shortid = require('shortid')
+var hyperid = require('hyperid')()
 var inherits = require('inherits')
 var LRU = require('lru-cache')
 var msgpack = require('msgpack-lite')
@@ -130,7 +130,7 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
   }
 
   var packet = {
-    id: shortid(),
+    id: hyperid(),
     msg: msg
   }
 
