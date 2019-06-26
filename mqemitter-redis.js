@@ -84,20 +84,12 @@ inherits(MQEmitterRedis, MQEmitter)
 })
 
 MQEmitterRedis.prototype.close = function (cb) {
-  var count = 2
   var that = this
 
-  function onEnd () {
-    if (--count === 0) {
-      that._close(cb)
-    }
-  }
-
-  this.subConn.on('end', onEnd)
-  this.subConn.quit()
-
-  this.pubConn.on('end', onEnd)
-  this.pubConn.quit()
+  Promise.all([
+    this.subConn.quit().then((result) => {this.subConn.disconnect()}),
+    this.pubConn.quit().then((result) => {this.pubConn.disconnect()})
+    ]).then( () => { that._close(cb) } )
 
   return this
 }
