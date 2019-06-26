@@ -43,7 +43,6 @@ var mq = redis({
     options: {   // it is 2nd parameter for Redis.Cluster
       redisOptions: {
         password: 'my secret',
-        db: 4,
         tls: {}
       },
       dnsLookup: (address, callback) => callback(null, address),
