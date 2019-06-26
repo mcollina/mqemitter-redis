@@ -7,7 +7,7 @@ var inherits = require('inherits')
 var LRU = require('lru-cache')
 var msgpack = require('msgpack-lite')
 var EE = require('events').EventEmitter
-var assert = require('assert');
+var assert = require('assert')
 
 function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
