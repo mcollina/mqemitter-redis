@@ -7,6 +7,7 @@ var inherits = require('inherits')
 var LRU = require('lru-cache')
 var msgpack = require('msgpack-lite')
 var EE = require('events').EventEmitter
+var assert = require('assert');
 
 function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
@@ -16,12 +17,21 @@ function MQEmitterRedis (opts) {
   opts = opts || {}
   this._opts = opts
 
-  this.subConn = new Redis(opts)
-  this.pubConn = new Redis(opts)
+  var cluster = opts.cluster
+  if (cluster && !Object.is(cluster, {})) {
+    let nodes = cluster.nodes || []
+    let clusterOptions = cluster.options || {}
+    assert(nodes.length > 0, "No Startup Nodes in cluster-enabled redis")
+    this.subConn = new Redis.Cluster(nodes, clusterOptions)
+    this.pubConn = new Redis.Cluster(nodes, clusterOptions)
+  } else {
+    this.subConn = new Redis(opts)
+    this.pubConn = new Redis(opts)
+  }
 
   this._topics = {}
 
-  this._cache = LRU({
+  this._cache = new LRU({
     max: 10000,
     maxAge: 60 * 1000 // one minute
   })
