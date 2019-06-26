@@ -21,7 +21,7 @@ function MQEmitterRedis (opts) {
   if (cluster && !Object.is(cluster, {})) {
     let nodes = cluster.nodes || []
     let clusterOptions = cluster.options || {}
-    assert(nodes.length > 0, "No Startup Nodes in cluster-enabled redis")
+    assert(nodes.length > 0, 'No Startup Nodes in cluster-enabled redis')
     this.subConn = new Redis.Cluster(nodes, clusterOptions)
     this.pubConn = new Redis.Cluster(nodes, clusterOptions)
   } else {
