@@ -6,6 +6,7 @@ node_js:
   - "12"
 sudo: false
 cache:
+  npm: true
   apt: true
   directories:
     - $HOME/.redis
