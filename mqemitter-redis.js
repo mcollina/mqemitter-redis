@@ -129,19 +129,22 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
 
 MQEmitterRedis.prototype.emit = function (msg, done) {
   if (this.closed) {
-    return done(new Error('mqemitter-redis is closed'))
-  }
-  var onFinish = function () {
     if (done) {
-      setImmediate(done)
+      return done(new Error('mqemitter-redis is closed'))
     }
   }
+
   this.pubConn.ping(() => {
     var packet = {
       id: hyperid(),
       msg: msg
     }
-    this.pubConn.publish(msg.topic, msgpack.encode(packet)).then(onFinish)
+
+    this.pubConn.publish(msg.topic, msgpack.encode(packet)).catch(() => {})
+
+    if (done) {
+      setImmediate(done)
+    }
   })
 }
 
