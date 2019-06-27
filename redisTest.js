@@ -11,7 +11,9 @@ function buildTests (opts) {
     var e = builder()
 
     e.subConn.on('message', function (topic, message) {
-      t.fail('the message should not be emitted')
+      if (topic.substr(0, 5) !== '$SYS/') {
+        t.fail('the message should not be emitted')
+      }
     })
 
     e.on('hello', noop)

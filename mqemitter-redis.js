@@ -29,6 +29,7 @@ function MQEmitterRedis (opts) {
     this.pubConn = new Redis(opts)
   }
 
+  this._id = hyperid()
   this._topics = {}
 
   this._cache = new LRU({
@@ -86,10 +87,24 @@ inherits(MQEmitterRedis, MQEmitter)
 MQEmitterRedis.prototype.close = function (cb) {
   var that = this
 
-  Promise.all([
-    this.subConn.quit().then(() => { this.subConn.disconnect() }),
-    this.pubConn.quit().then(() => { this.pubConn.disconnect() })
-  ]).then(() => { setTimeout(() => { that._close(cb) }, 5000) })
+  setTimeout(() => {
+    var handleClose = function () {
+      Promise.all([
+        that.subConn.quit().then(() => { that.subConn.disconnect() }),
+        that.pubConn.quit().then(() => { that.pubConn.disconnect() })
+      ]).then(() => { that._close(cb) })
+    }
+
+    Promise.all(this.subConn.ping).then(() => {
+      var topic = '$SYS/' + this._id + '/redis/close'
+      this.on(topic, () => {
+        that.removeListener(topic, () => {})
+        handleClose()
+      }, () => {
+        this.emit({ topic: topic, payload: 1 })
+      })
+    }).catch(handleClose)
+  }, 1000)
 
   return this
 }
