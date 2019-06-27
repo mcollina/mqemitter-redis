@@ -89,7 +89,7 @@ MQEmitterRedis.prototype.close = function (cb) {
   Promise.all([
     this.subConn.quit().then(() => { this.subConn.disconnect() }),
     this.pubConn.quit().then(() => { this.pubConn.disconnect() })
-  ]).then(() => { setTimeout(() => { that._close(cb) }, 1000) })
+  ]).then(() => { setTimeout(() => { that._close(cb) }, 5000) })
 
   return this
 }
