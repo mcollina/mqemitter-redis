@@ -127,26 +127,22 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   return this
 }
 
-MQEmitterRedis.prototype.emit = async function (msg, done) {
+MQEmitterRedis.prototype.emit = function (msg, done) {
   if (this.closed) {
     return done(new Error('mqemitter-redis is closed'))
   }
-
-  if (this._opts.cluster) {
-    await this.pubConn.ping()
+  var onFinish = function () {
+    if (done) {
+      setImmediate(done)
+    }
   }
-
-  var packet = {
-    id: hyperid(),
-    msg: msg
-  }
-
-  this.pubConn.publish(msg.topic, msgpack.encode(packet))
-    .then(() => {
-      if (done) {
-        setImmediate(done)
-      }
-    })
+  this.pubConn.ping(() => {
+    var packet = {
+      id: hyperid(),
+      msg: msg
+    }
+    this.pubConn.publish(msg.topic, msgpack.encode(packet)).then(onFinish)
+  })
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
