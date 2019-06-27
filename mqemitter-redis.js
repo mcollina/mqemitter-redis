@@ -119,9 +119,9 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   this._topics[subTopic] = 1
 
   if (this._containsWildcard(topic)) {
-    this.subConn.psubscribe(subTopic).then(onFinish)
+    this.subConn.psubscribe(subTopic, onFinish)
   } else {
-    this.subConn.subscribe(subTopic).then(onFinish)
+    this.subConn.subscribe(subTopic, onFinish)
   }
 
   return this
