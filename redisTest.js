@@ -53,16 +53,31 @@ function buildTests (opts) {
 
     t.plan(1)
 
-    e.state.once('error', function (err) {
-      if (isCluster) {
-        t.deepEqual(err.message, 'Failed to refresh slots cache.')
-      } else {
-        t.deepEqual(err.message.substr(0, 7), 'connect')
-      }
-      e.close(function () {
-        t.end()
-      })
+    var subErrorEventReceived = false
+    var pubErrorEventReceived = false
+
+    e.state.once('pubError', function (err) {
+      pubErrorEventReceived = true
+      newErrorEvent(err)
     })
+
+    e.state.once('subError', function (err) {
+      subErrorEventReceived = true
+      newErrorEvent(err)
+    })
+
+    function newErrorEvent (err) {
+      if (subErrorEventReceived && pubErrorEventReceived) {
+        if (isCluster) {
+          t.deepEqual(err.message, 'Failed to refresh slots cache.')
+        } else {
+          t.deepEqual(err.message.substr(0, 7), 'connect')
+        }
+        e.close(function () {
+          t.end()
+        })
+      }
+    }
   })
 
   test('topic pattern adapter', function (t) {
