@@ -83,15 +83,13 @@ inherits(MQEmitterRedis, MQEmitter)
   MQEmitterRedis.prototype['_' + name] = MQEmitterRedis.prototype[name]
 })
 
-MQEmitterRedis.prototype.close = async function (cb) {
+MQEmitterRedis.prototype.close = function (cb) {
   var that = this
 
-  await Promise.all([
+  Promise.all([
     this.subConn.quit().then(() => { this.subConn.disconnect() }),
     this.pubConn.quit().then(() => { this.pubConn.disconnect() })
-  ])
-
-  that._close(cb)
+  ]).then(() => { that._close(cb) })
 
   return this
 }
