@@ -4,13 +4,18 @@ node_js:
   - "8"
   - "10"
   - "12"
+sudo: false
 cache:
   apt: true
   directories:
     - $HOME/.redis
+addons:
+  apt:
+    packages:
+      - gcc
 install:
-  - sudo apt-get install -y gcc
-  - curl -o $HOME/.redis/redis-stable http://download.redis.io/redis-stable.tar.gz
+  - npm install
+  - curl -o $HOME/.redis/redis-stable.tar.gz http://download.redis.io/redis-stable.tar.gz
   - pushd $HOME/.redis
   - tar xvzf redis-stable.tar.gz
   - cd redis-stable
