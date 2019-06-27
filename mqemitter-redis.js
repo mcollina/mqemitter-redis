@@ -144,9 +144,11 @@ MQEmitterRedis.prototype.emit = async function (msg, done) {
   }
 
   this.pubConn.publish(msg.topic, msgpack.encode(packet))
-  if (done) {
-    setImmediate(done)
-  }
+    .then(() => {
+      if (done) {
+        setImmediate(done)
+      }
+    })
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
