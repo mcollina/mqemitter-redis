@@ -3,5 +3,14 @@ node_js:
   - "6"
   - "8"
   - "10"
-services:
-  - redis
+before_install:
+  - sudo apt-get install -y gcc
+  - wget http://download.redis.io/redis-stable.tar.gz
+  - tar xvzf redis-stable.tar.gz
+  - pushd redis-stable
+  - make -j4
+  - src/redis-server --port 6379 --daemonize yes
+  - cd utils/create-cluster
+  - ./create-cluster start
+  - echo yes | ./create-cluster create
+  - popd
