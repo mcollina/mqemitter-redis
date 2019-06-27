@@ -17,8 +17,8 @@ function runTests (builder, isCluster) {
 
 runTests(require('./'))
 runTests((opts) => {
-  opts = {
-    ...{
+  opts = Object.assign(
+    {
       cluster: {
         nodes: [{
           port: 30001,
@@ -30,7 +30,7 @@ runTests((opts) => {
         }
       }
     },
-    ...opts
-  }
+    opts
+  )
   return require('./')(opts)
 }, true)
