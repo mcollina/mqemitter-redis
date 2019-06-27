@@ -87,8 +87,8 @@ MQEmitterRedis.prototype.close = async function (cb) {
   var that = this
 
   await Promise.all([
-    this.subConn.quit().finally((result) => { this.subConn.disconnect() }),
-    this.pubConn.quit().finally((result) => { this.pubConn.disconnect() })
+    this.subConn.quit().then((result) => { this.subConn.disconnect() }),
+    this.pubConn.quit().then((result) => { this.pubConn.disconnect() })
   ])
 
   that._close(cb)
@@ -121,9 +121,9 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   this._topics[subTopic] = 1
 
   if (this._containsWildcard(topic)) {
-    this.subConn.psubscribe(subTopic, onFinish)
+    this.subConn.psubscribe(subTopic).then(onFinish)
   } else {
-    this.subConn.subscribe(subTopic, onFinish)
+    this.subConn.subscribe(subTopic).then(onFinish)
   }
 
   return this
