@@ -87,8 +87,8 @@ MQEmitterRedis.prototype.close = async function (cb) {
   var that = this
 
   await Promise.all([
-    this.subConn.quit().then((result) => { this.subConn.disconnect() }),
-    this.pubConn.quit().then((result) => { this.pubConn.disconnect() })
+    this.subConn.quit().then(() => { this.subConn.disconnect() }),
+    this.pubConn.quit().then(() => { this.pubConn.disconnect() })
   ])
 
   that._close(cb)
