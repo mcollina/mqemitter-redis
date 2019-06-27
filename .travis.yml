@@ -4,11 +4,16 @@ node_js:
   - "8"
   - "10"
   - "12"
-before_install:
+cache:
+  apt: true
+  directories:
+    - $HOME/.redis
+install:
   - sudo apt-get install -y gcc
-  - wget http://download.redis.io/redis-stable.tar.gz
+  - curl -o $HOME/.redis/redis-stable http://download.redis.io/redis-stable.tar.gz
+  - pushd $HOME/.redis
   - tar xvzf redis-stable.tar.gz
-  - pushd redis-stable
+  - cd redis-stable
   - make -j4
   - src/redis-server --port 6379 --daemonize yes
   - cd utils/create-cluster
