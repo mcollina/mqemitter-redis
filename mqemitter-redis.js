@@ -129,9 +129,13 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   return this
 }
 
-MQEmitterRedis.prototype.emit = function (msg, done) {
+MQEmitterRedis.prototype.emit = async function (msg, done) {
   if (this.closed) {
     return done(new Error('mqemitter-redis is closed'))
+  }
+
+  if (this._opts.cluster) {
+    await this.pubConn.ping()
   }
 
   var packet = {
