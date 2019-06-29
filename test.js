@@ -2,19 +2,6 @@
 
 var test = require('tape').test
 
-function runTests (builder, isCluster) {
-  require('mqemitter/abstractTest.js')({
-    builder: builder,
-    isCluster: isCluster || false,
-    test: test
-  })
-  require('./redisTest.js')({
-    builder: builder,
-    isCluster: isCluster || false,
-    test: test
-  })
-}
-
 runTests(require('./'))
 runTests((opts) => {
   opts = Object.assign(
@@ -34,3 +21,16 @@ runTests((opts) => {
   )
   return require('./')(opts)
 }, true)
+
+function runTests (builder, isCluster) {
+  require('mqemitter/abstractTest.js')({
+    builder: builder,
+    isCluster: isCluster || false,
+    test: test
+  })
+  require('./redisTest.js')({
+    builder: builder,
+    isCluster: isCluster || false,
+    test: test
+  })
+}
