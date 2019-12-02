@@ -55,6 +55,25 @@ which is used internally to connect to Redis.
 
 This constructor creates two connections to Redis.
 
+Alternatively, you can pass in an externally created Redis connection using the
+`conn` option. This can be useful when connecting to a Redis cluster, for example.
+
+Example:
+
+```js
+var redis = require('mqemitter-redis')
+var Redis = require('ioredis')
+var mq = redis({
+  conn: new Redis.Cluster([{
+    port: 6379,
+    host: '127.0.0.1'
+  }, {
+    port: 6380,
+    host: '127.0.0.1'
+  }])
+})
+```
+
 Acknowledgements
 ----------------
 

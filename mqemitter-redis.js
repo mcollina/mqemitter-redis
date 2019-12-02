@@ -16,8 +16,8 @@ function MQEmitterRedis (opts) {
   opts = opts || {}
   this._opts = opts
 
-  this.subConn = new Redis(opts)
-  this.pubConn = new Redis(opts)
+  this.pubConn = opts.conn || new Redis(opts)
+  this.subConn = opts.subConn || this.pubConn.duplicate()
 
   this._topics = {}
 
