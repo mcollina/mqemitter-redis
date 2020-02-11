@@ -7,6 +7,7 @@ var inherits = require('inherits')
 var LRU = require('lru-cache')
 var msgpack = require('msgpack-lite')
 var EE = require('events').EventEmitter
+var Pipeline = require('ioredis-auto-pipeline')
 
 function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
@@ -19,9 +20,11 @@ function MQEmitterRedis (opts) {
   this.subConn = new Redis(opts)
   this.pubConn = new Redis(opts)
 
+  this._pipeline = Pipeline(this.pubConn)
+
   this._topics = {}
 
-  this._cache = LRU({
+  this._cache = new LRU({
     max: 10000,
     maxAge: 60 * 1000 // one minute
   })
@@ -135,9 +138,11 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     msg: msg
   }
 
-  this.pubConn.publish(msg.topic, msgpack.encode(packet))
+  const p = this._pipeline.publish(msg.topic, msgpack.encode(packet))
   if (done) {
-    setImmediate(done)
+    p.then(done, done)
+  } else {
+    p.catch(noop)
   }
 }
 
@@ -171,5 +176,7 @@ MQEmitterRedis.prototype._containsWildcard = function (topic) {
   return (topic.indexOf(this._opts.wildcardOne) >= 0) ||
          (topic.indexOf(this._opts.wildcardSome) >= 0)
 }
+
+function noop () {}
 
 module.exports = MQEmitterRedis

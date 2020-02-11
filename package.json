@@ -4,18 +4,19 @@
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "dependencies": {
-    "hyperid": "^1.4.1",
+    "hyperid": "^2.0.0",
     "inherits": "^2.0.1",
-    "ioredis": "^3.2.2",
-    "lru-cache": "^4.1.3",
-    "mqemitter": "^2.2.0",
+    "ioredis": "^4.0.0",
+    "ioredis-auto-pipeline": "^1.0.1",
+    "lru-cache": "^5.1.1",
+    "mqemitter": "^4.0.0",
     "msgpack-lite": "^0.1.14"
   },
   "devDependencies": {
     "faucet": "^0.0.1",
     "pre-commit": "^1.0.7",
     "safe-buffer": "^5.1.2",
-    "standard": "^11.0.0",
+    "standard": "^14.0.0",
     "tape": "^4.9.0"
   },
   "scripts": {

@@ -53,7 +53,7 @@ test('ioredis connect event', function (t) {
 })
 
 test('ioredis error event', function (t) {
-  var e = redis({host: '127'})
+  var e = redis({ host: '127' })
 
   t.plan(1)
 
