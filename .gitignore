@@ -29,3 +29,5 @@ node_modules
 
 # ignore redis dump
 dump.rdb
+
+package-lock.json
