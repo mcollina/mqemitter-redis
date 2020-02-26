@@ -132,7 +132,7 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
   if (this.closed) {
     return done(new Error('mqemitter-redis is closed'))
   }
-  
+
   var that = this
 
   var packet = {
