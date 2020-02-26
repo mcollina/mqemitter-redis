@@ -132,18 +132,21 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
   if (this.closed) {
     return done(new Error('mqemitter-redis is closed'))
   }
+  
+  var that = this
 
   var packet = {
     id: hyperid(),
     msg: msg
   }
 
-  const p = this._pipeline.publish(msg.topic, msgpack.encode(packet))
+  const p = that._pipeline.publish(msg.topic, msgpack.encode(packet))
+
   if (done) {
-    p.then(done, done)
-  } else {
-    p.catch(noop)
+    p.then(done)
   }
+
+  p.catch((err) => that.state.emit('error', err))
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
@@ -176,7 +179,5 @@ MQEmitterRedis.prototype._containsWildcard = function (topic) {
   return (topic.indexOf(this._opts.wildcardOne) >= 0) ||
          (topic.indexOf(this._opts.wildcardSome) >= 0)
 }
-
-function noop () {}
 
 module.exports = MQEmitterRedis
