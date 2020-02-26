@@ -134,14 +134,12 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     return done ? done(err) : this._onError(err)
   }
 
-  var that = this
-
   var packet = {
     id: hyperid(),
     msg: msg
   }
 
-  const p = that._pipeline.publish(msg.topic, msgpack.encode(packet))
+  const p = this._pipeline.publish(msg.topic, msgpack.encode(packet))
 
   if (done) {
     p.then(() => done()).catch(done)
