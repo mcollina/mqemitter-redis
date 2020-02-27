@@ -24,6 +24,14 @@ function MQEmitterRedis (opts) {
 
   this._topics = {}
 
+  function onError (err) {
+    if (err) {
+      this.state.emit('error', err)
+    }
+  }
+
+  this._onError = onError.bind(this)
+
   this._cache = new LRU({
     max: 10000,
     maxAge: 60 * 1000 // one minute
@@ -77,6 +85,8 @@ inherits(MQEmitterRedis, MQEmitter)
 })
 
 MQEmitterRedis.prototype.close = function (cb) {
+  cb = cb || noop
+
   var count = 2
   var that = this
 
@@ -129,9 +139,11 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
 }
 
 MQEmitterRedis.prototype.emit = function (msg, done) {
+  done = done || this._onError
+
   if (this.closed) {
     var err = new Error('mqemitter-redis is closed')
-    return done ? done(err) : this._onError(err)
+    return done(err)
   }
 
   var packet = {
@@ -139,13 +151,7 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     msg: msg
   }
 
-  const p = this._pipeline.publish(msg.topic, msgpack.encode(packet))
-
-  if (done) {
-    p.then(() => done()).catch(done)
-  } else {
-    p.catch(this._onError.bind(this))
-  }
+  this._pipeline.publish(msg.topic, msgpack.encode(packet)).then(() => done()).catch(done)
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
@@ -179,8 +185,6 @@ MQEmitterRedis.prototype._containsWildcard = function (topic) {
          (topic.indexOf(this._opts.wildcardSome) >= 0)
 }
 
-MQEmitterRedis.prototype._onError = function (err) {
-  this.state.emit('error', err)
-}
+function noop () {}
 
 module.exports = MQEmitterRedis
