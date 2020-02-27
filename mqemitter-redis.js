@@ -14,7 +14,8 @@ function MQEmitterRedis (opts) {
     return new MQEmitterRedis(opts)
   }
 
-  opts = opts || {}
+  opts = opts || { showFriendlyErrorStack: true }
+
   this._opts = opts
 
   this.subConn = new Redis(opts)
@@ -24,14 +25,6 @@ function MQEmitterRedis (opts) {
 
   this._topics = {}
 
-  function onError (err) {
-    if (err) {
-      this.state.emit('error', err)
-    }
-  }
-
-  this._onError = onError.bind(this)
-
   this._cache = new LRU({
     max: 10000,
     maxAge: 60 * 1000 // one minute
@@ -40,6 +33,14 @@ function MQEmitterRedis (opts) {
   this.state = new EE()
 
   var that = this
+
+  function onError (err) {
+    if (err) {
+      that.state.emit('emitError', err)
+    }
+  }
+
+  this._onError = onError
 
   function handler (sub, topic, payload) {
     var packet = msgpack.decode(payload)
@@ -62,7 +63,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.subConn.on('error', function (err) {
-    that._onError(err)
+    that.state.emit('connectionError', err)
   })
 
   this.pubConn.on('connect', function () {
@@ -70,7 +71,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.pubConn.on('error', function (err) {
-    that._onError(err)
+    that.state.emit('connectionError', err)
   })
 
   MQEmitter.call(this, opts)
