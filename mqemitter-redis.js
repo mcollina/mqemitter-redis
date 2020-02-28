@@ -35,13 +35,10 @@ function MQEmitterRedis (opts) {
   var that = this
 
   function onError (err) {
-    if (err) {
+    if (err && !that.closing) {
       that.state.emit('error', err)
     }
   }
-
-  // Add default error listener to prevent unhandled rejection #15
-  this.state.on('error', noop)
 
   this._onError = onError
 
