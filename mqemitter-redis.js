@@ -36,9 +36,12 @@ function MQEmitterRedis (opts) {
 
   function onError (err) {
     if (err) {
-      that.state.emit('emitError', err)
+      that.state.emit('error', err)
     }
   }
+
+  // Add default error listener to prevent unhandled rejection #15
+  this.state.on('error', noop)
 
   this._onError = onError
 
@@ -63,7 +66,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.subConn.on('error', function (err) {
-    that.state.emit('error', err)
+    that._onError(err)
   })
 
   this.pubConn.on('connect', function () {
@@ -71,7 +74,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.pubConn.on('error', function (err) {
-    that.state.emit('error', err)
+    that._onError(err)
   })
 
   MQEmitter.call(this, opts)
