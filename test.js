@@ -58,7 +58,7 @@ test('ioredis error event', function (t) {
 
   t.plan(1)
 
-  e.state.once('connectionError', function (err) {
+  e.state.once('error', function (err) {
     t.deepEqual(err.message.substr(0, 7), 'connect')
     e.close(function () {
       t.end()

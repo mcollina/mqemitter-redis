@@ -63,7 +63,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.subConn.on('error', function (err) {
-    that.state.emit('connectionError', err)
+    that.state.emit('error', err)
   })
 
   this.pubConn.on('connect', function () {
@@ -71,7 +71,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.pubConn.on('error', function (err) {
-    that.state.emit('connectionError', err)
+    that.state.emit('error', err)
   })
 
   MQEmitter.call(this, opts)
