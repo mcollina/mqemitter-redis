@@ -14,7 +14,7 @@ function MQEmitterRedis (opts) {
     return new MQEmitterRedis(opts)
   }
 
-  opts = opts || { showFriendlyErrorStack: true }
+  opts = opts || {}
 
   this._opts = opts
 
@@ -87,6 +87,12 @@ inherits(MQEmitterRedis, MQEmitter)
 
 MQEmitterRedis.prototype.close = function (cb) {
   cb = cb || noop
+
+  if (this.closed || this.closing) {
+    return cb()
+  }
+
+  this.closing = true
 
   var count = 2
   var that = this
