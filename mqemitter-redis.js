@@ -15,6 +15,7 @@ function MQEmitterRedis (opts) {
   }
 
   opts = opts || {}
+
   this._opts = opts
 
   this.subConn = new Redis(opts)
@@ -32,6 +33,14 @@ function MQEmitterRedis (opts) {
   this.state = new EE()
 
   var that = this
+
+  function onError (err) {
+    if (err && !that.closing) {
+      that.state.emit('error', err)
+    }
+  }
+
+  this._onError = onError
 
   function handler (sub, topic, payload) {
     var packet = msgpack.decode(payload)
@@ -54,7 +63,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.subConn.on('error', function (err) {
-    that.state.emit('error', err)
+    that._onError(err)
   })
 
   this.pubConn.on('connect', function () {
@@ -62,7 +71,7 @@ function MQEmitterRedis (opts) {
   })
 
   this.pubConn.on('error', function (err) {
-    that.state.emit('error', err)
+    that._onError(err)
   })
 
   MQEmitter.call(this, opts)
@@ -77,6 +86,14 @@ inherits(MQEmitterRedis, MQEmitter)
 })
 
 MQEmitterRedis.prototype.close = function (cb) {
+  cb = cb || noop
+
+  if (this.closed || this.closing) {
+    return cb()
+  }
+
+  this.closing = true
+
   var count = 2
   var that = this
 
@@ -129,8 +146,11 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
 }
 
 MQEmitterRedis.prototype.emit = function (msg, done) {
+  done = done || this._onError
+
   if (this.closed) {
-    return done(new Error('mqemitter-redis is closed'))
+    var err = new Error('mqemitter-redis is closed')
+    return done(err)
   }
 
   var packet = {
@@ -138,12 +158,7 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     msg: msg
   }
 
-  const p = this._pipeline.publish(msg.topic, msgpack.encode(packet))
-  if (done) {
-    p.then(done, done)
-  } else {
-    p.catch(noop)
-  }
+  this._pipeline.publish(msg.topic, msgpack.encode(packet)).then(() => done()).catch(done)
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
