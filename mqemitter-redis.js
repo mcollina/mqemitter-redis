@@ -43,7 +43,12 @@ function MQEmitterRedis (opts) {
   this._onError = onError
 
   function handler (sub, topic, payload) {
-    var packet = msgpack.decode(payload)
+    var packet = msgpack.decode(payload);
+
+    // maybe it can handler from another topic which is not from broker / emitter
+    if (!packet.id)
+      return;
+
     if (!that._cache.get(packet.id)) {
       that._emit(packet.msg)
     }
