@@ -115,13 +115,13 @@ MQEmitterRedis.prototype.close = function (cb) {
 MQEmitterRedis.prototype._subTopic = function (topic) {
   return topic
     .replace(this._opts.regexWildcardOne, '*')
-    .replace((this._opts.matchEmptyLevels ? '/' : '') + this._opts.wildcardSome, '*')
+    .replace((this._opts.matchEmptyLevels ? this._opts.separator : '') + this._opts.wildcardSome, '*')
 }
 
 MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   var subTopic = this._subTopic(topic)
   var onFinish = function () {
-    if (done && this._matcher.match(topic)) {
+    if (done) {
       setImmediate(done)
     }
   }
