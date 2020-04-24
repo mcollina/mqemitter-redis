@@ -77,6 +77,7 @@ function MQEmitterRedis (opts) {
   MQEmitter.call(this, opts)
 
   this._opts.regexWildcardOne = new RegExp(this._opts.wildcardOne.replace(/([/,!\\^${}[\]().*+?|<>\-&])/g, '\\$&'), 'g')
+  this._opts.regexWildcardSome = new RegExp(this._opts.separator.replace(/([/,!\\^${}[\]().*+?|<>\-&])/g, '\\$&') + '?' + this._opts.wildcardSome.replace(/([/,!\\^${}[\]().*+?|<>\-&])/g, '\\$&'), 'g')
 }
 
 inherits(MQEmitterRedis, MQEmitter)
@@ -115,7 +116,7 @@ MQEmitterRedis.prototype.close = function (cb) {
 MQEmitterRedis.prototype._subTopic = function (topic) {
   return topic
     .replace(this._opts.regexWildcardOne, '*')
-    .replace((this._opts.matchEmptyLevels ? this._opts.separator : '') + this._opts.wildcardSome, '*')
+    .replace(this._opts.regexWildcardSome, '*')
 }
 
 MQEmitterRedis.prototype.on = function on (topic, cb, done) {
