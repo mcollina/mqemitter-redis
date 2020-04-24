@@ -1,6 +1,6 @@
 {
   "name": "mqemitter-redis",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "dependencies": {
