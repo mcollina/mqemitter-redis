@@ -28,7 +28,7 @@ var mq = redis({
   db: 4
 })
 var msg = {
-  topic: 'hello world'
+  topic: 'hello world',
   payload: 'or any other fields'
 }
 
