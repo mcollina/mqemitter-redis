@@ -148,7 +148,7 @@ MQEmitterRedis.prototype.on = function on (topic, cb, done) {
   return this
 }
 
-MQEmitterRedis.prototype.emit = function (msg, done) {
+MQEmitterRedis.prototype.emit = function (msg, done, packet = null) {
   done = done || this._onError
 
   if (this.closed) {
@@ -156,11 +156,12 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     return done(err)
   }
 
-  var packet = {
-    id: hyperid(),
-    msg: msg
+  if (packet == null) {
+    packet = {
+      id: hyperid(),
+      msg: msg
+    }
   }
-
   this._pipeline.publish(msg.topic, msgpack.encode(packet)).then(() => done()).catch(done)
 }
 

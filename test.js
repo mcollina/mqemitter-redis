@@ -59,7 +59,9 @@ test('ioredis error event', function (t) {
   t.plan(1)
 
   e.state.once('error', function (err) {
-    t.deepEqual(err.message.substr(0, 7), 'connect')
+    if (err) {
+      t.pass(err.message)
+    }
     e.close(function () {
       t.end()
     })
@@ -81,4 +83,21 @@ test('topic pattern adapter', function (t) {
   e.close(function () {
     t.end()
   })
+})
+
+test('topic with not object packet', function (t) {
+  var e = redis()
+
+  e.subConn.on('message', function (topic, message) {
+    t.pass('ok')
+    e.close(function () {
+      t.end()
+    })
+  })
+  e.on('empty', noop)
+  e.emit({ topic: 'empty' }, function (err) {
+    if (err) {
+      t.fail(err.message)
+    }
+  }, 123)
 })
