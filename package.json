@@ -16,7 +16,7 @@
     "faucet": "^0.0.1",
     "pre-commit": "^1.0.7",
     "safe-buffer": "^5.1.2",
-    "standard": "^14.0.0",
+    "standard": "^16.0.0",
     "tape": "^5.0.1"
   },
   "scripts": {
