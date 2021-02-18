@@ -12,7 +12,7 @@ export interface MQEmitterOptions {
 export type Message = Record<string, any> & { topic: string };
 
 export interface MQEmitterRedis extends MQEmitter {
-  new (options?: MQEmitterOptions & RedisOptions);
+  new (options?: MQEmitterOptions & RedisOptions): MQEmitterRedis;
   current: number;
   concurrent: number;
   on(
