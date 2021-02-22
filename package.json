@@ -3,6 +3,7 @@
   "version": "4.0.3",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
+  "types": "types/index.d.ts",
   "dependencies": {
     "hyperid": "^2.0.0",
     "inherits": "^2.0.1",
@@ -13,14 +14,17 @@
     "msgpack-lite": "^0.1.14"
   },
   "devDependencies": {
+    "@types/ioredis": "^4.19.4",
     "faucet": "^0.0.1",
     "pre-commit": "^1.0.7",
     "safe-buffer": "^5.1.2",
     "standard": "^16.0.1",
-    "tape": "^5.0.1"
+    "tape": "^5.0.1",
+    "tsd": "^0.14.0"
   },
   "scripts": {
-    "test": "standard && tape test.js | faucet"
+    "test:types": "tsd",
+    "test": "standard && tape test.js | faucet && tsd"
   },
   "pre-commit": "test",
   "repository": {
