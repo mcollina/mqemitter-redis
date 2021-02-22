@@ -1,13 +1,13 @@
 'use strict'
 
-var Redis = require('ioredis')
-var MQEmitter = require('mqemitter')
-var hyperid = require('hyperid')()
-var inherits = require('inherits')
-var LRU = require('lru-cache')
-var msgpack = require('msgpack-lite')
-var EE = require('events').EventEmitter
-var Pipeline = require('ioredis-auto-pipeline')
+const Redis = require('ioredis')
+const MQEmitter = require('mqemitter')
+const hyperid = require('hyperid')()
+const inherits = require('inherits')
+const LRU = require('lru-cache')
+const msgpack = require('msgpack-lite')
+const EE = require('events').EventEmitter
+const Pipeline = require('ioredis-auto-pipeline')
 
 function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
@@ -32,7 +32,7 @@ function MQEmitterRedis (opts) {
 
   this.state = new EE()
 
-  var that = this
+  const that = this
 
   function onError (err) {
     if (err && !that.closing) {
@@ -43,7 +43,7 @@ function MQEmitterRedis (opts) {
   this._onError = onError
 
   function handler (sub, topic, payload) {
-    var packet = msgpack.decode(payload)
+    const packet = msgpack.decode(payload)
     if (!that._cache.get(packet.id)) {
       that._emit(packet.msg)
     }
@@ -95,8 +95,8 @@ MQEmitterRedis.prototype.close = function (cb) {
 
   this.closing = true
 
-  var count = 2
-  var that = this
+  let count = 2
+  const that = this
 
   function onEnd () {
     if (--count === 0) {
@@ -120,8 +120,8 @@ MQEmitterRedis.prototype._subTopic = function (topic) {
 }
 
 MQEmitterRedis.prototype.on = function on (topic, cb, done) {
-  var subTopic = this._subTopic(topic)
-  var onFinish = function () {
+  const subTopic = this._subTopic(topic)
+  const onFinish = function () {
     if (done) {
       setImmediate(done)
     }
@@ -150,11 +150,11 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
   done = done || this._onError
 
   if (this.closed) {
-    var err = new Error('mqemitter-redis is closed')
+    const err = new Error('mqemitter-redis is closed')
     return done(err)
   }
 
-  var packet = {
+  const packet = {
     id: hyperid(),
     msg: msg
   }
@@ -163,8 +163,8 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
-  var subTopic = this._subTopic(topic)
-  var onFinish = function () {
+  const subTopic = this._subTopic(topic)
+  const onFinish = function () {
     if (done) {
       setImmediate(done)
     }

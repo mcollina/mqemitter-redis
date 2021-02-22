@@ -1,8 +1,8 @@
 'use strict'
 
-var redis = require('./')
-var test = require('tape').test
-var abstractTests = require('mqemitter/abstractTest.js')
+const redis = require('./')
+const test = require('tape').test
+const abstractTests = require('mqemitter/abstractTest.js')
 
 abstractTests({
   builder: redis,
@@ -12,7 +12,7 @@ abstractTests({
 function noop () {}
 
 test('actual unsubscribe from Redis', function (t) {
-  var e = redis()
+  const e = redis()
 
   e.subConn.on('message', function (topic, message) {
     t.fail('the message should not be emitted')
@@ -29,10 +29,10 @@ test('actual unsubscribe from Redis', function (t) {
 })
 
 test('ioredis connect event', function (t) {
-  var e = redis()
+  const e = redis()
 
-  var subConnectEventReceived = false
-  var pubConnectEventReceived = false
+  let subConnectEventReceived = false
+  let pubConnectEventReceived = false
 
   e.state.on('pubConnect', function () {
     pubConnectEventReceived = true
@@ -54,7 +54,7 @@ test('ioredis connect event', function (t) {
 })
 
 test('ioredis error event', function (t) {
-  var e = redis({ host: '127' })
+  const e = redis({ host: '127' })
 
   t.plan(1)
 
@@ -67,12 +67,12 @@ test('ioredis error event', function (t) {
 })
 
 test('topic pattern adapter', function (t) {
-  var e = redis()
+  const e = redis()
 
-  var mqttTopic = 'rooms/+/devices/+/status'
-  var expectedRedisPattern = 'rooms/*/devices/*/status'
+  const mqttTopic = 'rooms/+/devices/+/status'
+  const expectedRedisPattern = 'rooms/*/devices/*/status'
 
-  var subTopic = e._subTopic(mqttTopic)
+  const subTopic = e._subTopic(mqttTopic)
 
   t.plan(1)
 
