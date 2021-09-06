@@ -1,5 +1,5 @@
 {
-  "name": "mqemitter-redis",
+  "name": "@pelicarno/mqemitter-redis",
   "version": "7.2.0",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
@@ -34,7 +34,7 @@
   "pre-commit": "test",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcollina/mqemitter-redis.git"
+    "url": "https://github.com/pelicarno/mqemitter-redis.git"
   },
   "keywords": [
     "redis",
@@ -47,7 +47,7 @@
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mcollina/mqemitter-redis/issues"
+    "url": "https://github.com/pelicarno/mqemitter-redis/issues"
   },
-  "homepage": "https://github.com/mcollina/mqemitter-redis"
+  "homepage": "https://github.com/pelicarno/mqemitter-redis"
 }
