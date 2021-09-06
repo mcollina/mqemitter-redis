@@ -71,7 +71,10 @@ function MQEmitterRedis (opts) {
   })
 
   this.subConn.on('error', function (err) {
-    that._onError(err)
+    // redis can retry to make a connection
+    if (err.code !== 'ECONNREFUSED') {
+      that._onError(err)
+    }
   })
 
   this.pubConn.on('connect', function () {
@@ -79,7 +82,10 @@ function MQEmitterRedis (opts) {
   })
 
   this.pubConn.on('error', function (err) {
-    that._onError(err)
+    // redis can retry to make a connection
+    if (err.code !== 'ECONNREFUSED') {
+      that._onError(err)
+    }
   })
 
   MQEmitter.call(this, opts)
