@@ -9,6 +9,11 @@ abstractTests({
   test: test
 })
 
+abstractTests({
+  builder: function (opts) { return new redis.MQEmitterRedisPrefix('some_prefix/', opts) },
+  test: test
+})
+
 function noop () {}
 
 test('actual unsubscribe from Redis', function (t) {
