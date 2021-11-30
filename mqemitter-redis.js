@@ -200,7 +200,7 @@ module.exports = MQEmitterRedis
 function MQEmitterRedisPrefix (pubSubPrefix, options) {
   MQEmitterRedis.call(this, options)
   this._pubSubPrefix = pubSubPrefix
-  this._sym_proxiedCallback = Symbol('proxiedCallback');
+  this._sym_proxiedCallback = Symbol('proxiedCallback')
 }
 inherits(MQEmitterRedisPrefix, MQEmitterRedis)
 MQEmitterRedisPrefix.prototype.on = function (topic, cb, done) {
