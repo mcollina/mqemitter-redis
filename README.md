@@ -1,4 +1,4 @@
-mqemitter-redis&nbsp;&nbsp;[![Build Status](https://travis-ci.org/mcollina/mqemitter-redis.png)](https://travis-ci.org/mcollina/mqemitter-redis)
+mqemitter-redis&nbsp;&nbsp;![ci](https://github.com/mcollina/mqemitter/workflows/ci/badge.svg)
 ===============
 
 Redis-powered [MQEmitter](http://github.com/mcollina/mqemitter).
