@@ -208,7 +208,7 @@ MQEmitterRedisPrefix.prototype.on = function (topic, cb, done) {
   cb[this._sym_proxiedCallback] = function (packet, cbcb) {
     const t = packet.topic.slice(this._pubSubPrefix.length)
     const p = { ...packet, topic: t }
-    return cb(p, cbcb)
+    return cb.call(this, p, cbcb)
   }.bind(this)
   return MQEmitterRedis.prototype.on.call(this, t, cb[this._sym_proxiedCallback], done)
 }
