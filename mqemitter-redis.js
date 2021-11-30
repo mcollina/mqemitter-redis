@@ -196,3 +196,37 @@ MQEmitterRedis.prototype._containsWildcard = function (topic) {
 function noop () {}
 
 module.exports = MQEmitterRedis
+
+class MQEmitterRedisPrefix extends MQEmitterRedis {
+	#pubSubPrefix;
+	#proxiedCallback;
+	constructor(pubSubPrefix, options) {
+		super(options);
+		this.#pubSubPrefix = pubSubPrefix;
+		this.#proxiedCallback = Symbol('proxiedCallback');
+	}
+
+	on(topic, cb, done) {
+		const t = this.#pubSubPrefix+topic;
+		cb[this.#proxiedCallback] = (packet, cbcb) => {
+			const t = packet.topic.slice(this.#pubSubPrefix.length);
+			const p = { ...packet, topic: t };
+			return cb(p, cbcb);
+		};
+		return super.on(t, cb[this.#proxiedCallback], done);
+	};
+
+	removeListener(topic, func, done) {
+		const t = this.#pubSubPrefix+topic;
+		const f = func[this.#proxiedCallback];
+		return super.removeListener(t, f, done);
+	};
+
+	emit(packet, done) {
+		const t = this.#pubSubPrefix+packet.topic;
+		const p = { ...packet, topic: t };
+		return super.emit(p, done);
+	};
+};
+
+module.exports.MQEmitterRedisPrefix = MQEmitterRedisPrefix;
