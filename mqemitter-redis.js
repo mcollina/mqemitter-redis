@@ -197,63 +197,30 @@ function noop () {}
 
 module.exports = MQEmitterRedis
 
-/*class MQEmitterRedisPrefix extends MQEmitterRedis {
-	#pubSubPrefix;
-	#proxiedCallback;
-	constructor(pubSubPrefix, options) {
-		super(options);
-		this.#pubSubPrefix = pubSubPrefix;
-		this.#proxiedCallback = Symbol('proxiedCallback');
-	}
-
-	on(topic, cb, done) {
-		const t = this.#pubSubPrefix+topic;
-		cb[this.#proxiedCallback] = (packet, cbcb) => {
-			const t = packet.topic.slice(this.#pubSubPrefix.length);
-			const p = { ...packet, topic: t };
-			return cb(p, cbcb);
-		};
-		return super.on(t, cb[this.#proxiedCallback], done);
-	};
-
-	removeListener(topic, func, done) {
-		const t = this.#pubSubPrefix+topic;
-		const f = func[this.#proxiedCallback];
-		return super.removeListener(t, f, done);
-	};
-
-	emit(packet, done) {
-		const t = this.#pubSubPrefix+packet.topic;
-		const p = { ...packet, topic: t };
-		return super.emit(p, done);
-	};
-};*/
-
-function MQEmitterRedisPrefix(pubSubPrefix, options) {
-	assert(this instanceof MQEmitterRedisPrefix);
-	MQEmitterRedis.call(this, options);
-	this._pubSubPrefix = pubSubPrefix;
-	this._sym_proxiedCallback = '_private_symbol_MQEmitterRedisPrefix_proxiedCallback'; //Symbol('proxiedCallback');
+function MQEmitterRedisPrefix (pubSubPrefix, options) {
+  MQEmitterRedis.call(this, options)
+  this._pubSubPrefix = pubSubPrefix
+  this._sym_proxiedCallback = '_private_symbol_MQEmitterRedisPrefix_proxiedCallback' // Symbol('proxiedCallback');
 }
-inherits(MQEmitterRedisPrefix, MQEmitterRedis);
-MQEmitterRedisPrefix.prototype.on = function(topic, cb, done){
-	var t = this._pubSubPrefix+topic;
-	cb[this._sym_proxiedCallback] = (function(packet, cbcb){
-    var t = packet.topic.slice(this._pubSubPrefix.length);
-		var p = { ...packet, topic: t };
-		return cb(p, cbcb);
-	}).bind(this);
-	return MQEmitterRedis.prototype.on.call(this, t, cb[this._sym_proxiedCallback], done);
-};
-MQEmitterRedisPrefix.prototype.removeListener = function(topic, func, done){
-	var t = this._pubSubPrefix+topic;
-	var f = func[this._sym_proxiedCallback];
-	return MQEmitterRedis.prototype.removeListener.call(this, t, f, done);
-};
-MQEmitterRedisPrefix.prototype.emit = function(packet, done){
-	var t = this._pubSubPrefix+packet.topic;
-	var p = { ...packet, topic: t };
-	return MQEmitterRedis.prototype.emit.call(this, p, done);
-};
+inherits(MQEmitterRedisPrefix, MQEmitterRedis)
+MQEmitterRedisPrefix.prototype.on = function (topic, cb, done) {
+  const t = this._pubSubPrefix + topic
+  cb[this._sym_proxiedCallback] = function (packet, cbcb) {
+    const t = packet.topic.slice(this._pubSubPrefix.length)
+    const p = { ...packet, topic: t }
+    return cb(p, cbcb)
+  }.bind(this)
+  return MQEmitterRedis.prototype.on.call(this, t, cb[this._sym_proxiedCallback], done)
+}
+MQEmitterRedisPrefix.prototype.removeListener = function (topic, func, done) {
+  const t = this._pubSubPrefix + topic
+  const f = func[this._sym_proxiedCallback]
+  return MQEmitterRedis.prototype.removeListener.call(this, t, f, done)
+}
+MQEmitterRedisPrefix.prototype.emit = function (packet, done) {
+  const t = this._pubSubPrefix + packet.topic
+  const p = { ...packet, topic: t }
+  return MQEmitterRedis.prototype.emit.call(this, p, done)
+}
 
-module.exports.MQEmitterRedisPrefix = MQEmitterRedisPrefix;
+module.exports.MQEmitterRedisPrefix = MQEmitterRedisPrefix

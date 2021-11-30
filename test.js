@@ -10,7 +10,7 @@ abstractTests({
 })
 
 abstractTests({
-  builder: function(opts) { return new redis.MQEmitterRedisPrefix('some_prefix/',opts); },
+  builder: function (opts) { return new redis.MQEmitterRedisPrefix('some_prefix/', opts) },
   test: test
 })
 
