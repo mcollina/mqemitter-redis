@@ -5,7 +5,7 @@
   "main": "mqemitter-redis.js",
   "types": "types/index.d.ts",
   "dependencies": {
-    "hyperid": "^2.0.0",
+    "hyperid": "^3.0.0",
     "inherits": "^2.0.1",
     "ioredis": "^4.0.0",
     "ioredis-auto-pipeline": "^1.0.1",
