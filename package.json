@@ -7,7 +7,7 @@
   "dependencies": {
     "hyperid": "^2.0.0",
     "inherits": "^2.0.1",
-    "ioredis": "^4.0.0",
+    "ioredis": "^5.0.3",
     "ioredis-auto-pipeline": "^1.0.1",
     "lru-cache": "^6.0.0",
     "mqemitter": "^4.1.3",
