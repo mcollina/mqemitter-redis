@@ -7,6 +7,7 @@ export interface MQEmitterOptions {
   separator?: string;
   wildcardOne?: string;
   wildcardSome?: string;
+  connectionString?: string;
 }
 
 export type Message = Record<string, any> & { topic: string };
