@@ -87,3 +87,30 @@ test('topic pattern adapter', function (t) {
     t.end()
   })
 })
+
+test('ioredis connection string', function (t) {
+  const e = redis({
+    connectionString: 'redis://localhost:6379/0'
+  })
+
+  let subConnectEventReceived = false
+  let pubConnectEventReceived = false
+
+  e.state.on('pubConnect', function () {
+    pubConnectEventReceived = true
+    newConnectionEvent()
+  })
+
+  e.state.on('subConnect', function () {
+    subConnectEventReceived = true
+    newConnectionEvent()
+  })
+
+  function newConnectionEvent () {
+    if (subConnectEventReceived && pubConnectEventReceived) {
+      e.close(function () {
+        t.end()
+      })
+    }
+  }
+})
