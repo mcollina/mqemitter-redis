@@ -20,7 +20,7 @@
     "safe-buffer": "^5.1.2",
     "standard": "^16.0.1",
     "tape": "^5.0.1",
-    "tsd": "^0.14.0"
+    "tsd": "^0.20.0"
   },
   "scripts": {
     "test:types": "tsd",
