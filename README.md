@@ -44,6 +44,16 @@ mq.emit(msg, function () {
 })
 ```
 
+Connection String Example
+-------------------------
+
+```js
+var redis = require('mqemitter-redis')
+var mq = redis({
+  connectionString: 'redis://:authpassword@127.0.0.1:6380/4'
+})
+```
+
 ## API
 
 <a name="constructor"></a>
