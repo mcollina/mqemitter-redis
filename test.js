@@ -6,12 +6,12 @@ const abstractTests = require('mqemitter/abstractTest.js')
 
 abstractTests({
   builder: redis,
-  test: test
+  test
 })
 
 abstractTests({
   builder: function (opts) { return new redis.MQEmitterRedisPrefix('some_prefix/', opts) },
-  test: test
+  test
 })
 
 function noop () {}

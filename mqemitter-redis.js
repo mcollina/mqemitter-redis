@@ -27,7 +27,7 @@ function MQEmitterRedis (opts) {
 
   this._cache = new LRU({
     max: 10000,
-    maxAge: 60 * 1000 // one minute
+    ttl: 60 * 1000 // one minute
   })
 
   this.state = new EE()
@@ -156,7 +156,7 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
 
   const packet = {
     id: hyperid(),
-    msg: msg
+    msg
   }
 
   this._pipeline.publish(msg.topic, msgpack.encode(packet)).then(() => done()).catch(done)
