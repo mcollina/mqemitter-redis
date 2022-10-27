@@ -14,7 +14,7 @@
     "msgpack-lite": "^0.1.14"
   },
   "devDependencies": {
-    "@types/ioredis": "^4.19.4",
+    "@types/ioredis": "^5.0.0",
     "faucet": "^0.0.1",
     "pre-commit": "^1.0.7",
     "safe-buffer": "^5.1.2",
