@@ -1,6 +1,7 @@
 'use strict'
 
 const redis = require('./')
+const Redis = require('ioredis')
 const test = require('tape').test
 const abstractTests = require('mqemitter/abstractTest.js')
 
@@ -109,6 +110,54 @@ test('ioredis connection string', function (t) {
   function newConnectionEvent () {
     if (subConnectEventReceived && pubConnectEventReceived) {
       e.close(function () {
+        t.end()
+      })
+    }
+  }
+})
+
+test('external redis pubConn and subConn', function (t) {
+  t.plan(4)
+
+  const externalRedisSubConn = new Redis()
+  externalRedisSubConn.on('error', e => {
+    t.notOk(e)
+  })
+  externalRedisSubConn.on('connect', () => {
+    t.pass('redis subConn connected')
+  })
+
+  const externalRedisPubConn = new Redis()
+  externalRedisPubConn.on('error', e => {
+    t.notOk(e)
+  })
+  externalRedisPubConn.on('connect', () => {
+    t.pass('redis pubConn connected')
+  })
+
+  const e = redis({
+    subConn: externalRedisSubConn,
+    pubConn: externalRedisPubConn
+  })
+
+  let subConnectEventReceived = false
+  let pubConnectEventReceived = false
+
+  e.state.on('pubConnect', function () {
+    pubConnectEventReceived = true
+    newConnectionEvent()
+  })
+
+  e.state.on('subConnect', function () {
+    subConnectEventReceived = true
+    newConnectionEvent()
+  })
+
+  function newConnectionEvent () {
+    if (subConnectEventReceived && pubConnectEventReceived) {
+      e.close(function () {
+        t.equal(e.subConn, externalRedisSubConn, 'uses external redis subConn')
+        t.equal(e.pubConn, externalRedisPubConn, 'uses external redis pubConn')
         t.end()
       })
     }
