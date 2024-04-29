@@ -1,6 +1,6 @@
 {
   "name": "mqemitter-redis",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "types": "types/index.d.ts",
