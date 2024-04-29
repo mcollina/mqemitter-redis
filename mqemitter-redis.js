@@ -18,8 +18,8 @@ function MQEmitterRedis (opts) {
 
   this._opts = opts
 
-  this.subConn = new Redis(opts.connectionString || opts)
-  this.pubConn = new Redis(opts.connectionString || opts)
+  this.subConn = opts.subConn || new Redis(opts.connectionString || opts)
+  this.pubConn = opts.pubConn || new Redis(opts.connectionString || opts)
 
   this._pipeline = Pipeline(this.pubConn)
 
