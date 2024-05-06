@@ -4,7 +4,7 @@ const Redis = require('ioredis')
 const MQEmitter = require('mqemitter')
 const hyperid = require('hyperid')()
 const inherits = require('inherits')
-const LRU = require('lru-cache')
+const { LRUCache } = require('lru-cache')
 const msgpack = require('msgpack-lite')
 const EE = require('events').EventEmitter
 const Pipeline = require('ioredis-auto-pipeline')
@@ -25,7 +25,7 @@ function MQEmitterRedis (opts) {
 
   this._topics = {}
 
-  this._cache = new LRU({
+  this._cache = new LRUCache({
     max: 10000,
     ttl: 60 * 1000 // one minute
   })
