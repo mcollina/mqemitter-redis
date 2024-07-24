@@ -1,19 +1,8 @@
 'use strict'
 
-const redis = require('./')
+const redis = require('../')
 const Redis = require('ioredis')
 const test = require('tape').test
-const abstractTests = require('mqemitter/abstractTest.js')
-
-abstractTests({
-  builder: redis,
-  test
-})
-
-abstractTests({
-  builder: function (opts) { return new redis.MQEmitterRedisPrefix('some_prefix/', opts) },
-  test
-})
 
 function noop () {}
 

@@ -10,7 +10,7 @@
     "ioredis": "^5.4.1",
     "ioredis-auto-pipeline": "^1.0.2",
     "lru-cache": "^10.2.2",
-    "mqemitter": "^6.0.0",
+    "mqemitter": "^6.0.2",
     "msgpack-lite": "^0.1.26"
   },
   "devDependencies": {
@@ -23,7 +23,7 @@
   },
   "scripts": {
     "test:types": "tsd",
-    "test": "standard && tape test.js | faucet && tsd"
+    "test": "standard && tape test/*.js | faucet && tsd"
   },
   "pre-commit": "test",
   "repository": {
