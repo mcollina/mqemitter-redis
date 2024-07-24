@@ -1,6 +1,6 @@
 {
   "name": "mqemitter-redis",
-  "version": "5.1.0",
+  "version": "6.0.0",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "types": "types/index.d.ts",
@@ -8,7 +8,6 @@
     "hyperid": "^3.2.0",
     "inherits": "^2.0.4",
     "ioredis": "^5.4.1",
-    "ioredis-auto-pipeline": "^1.0.2",
     "lru-cache": "^10.2.2",
     "mqemitter": "^6.0.2",
     "msgpack-lite": "^0.1.26"
