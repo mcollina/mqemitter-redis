@@ -4,28 +4,27 @@ const Redis = require('ioredis')
 const MQEmitter = require('mqemitter')
 const hyperid = require('hyperid')()
 const inherits = require('inherits')
-const LRU = require('lru-cache')
+const { LRUCache } = require('lru-cache')
 const msgpack = require('msgpack-lite')
 const EE = require('events').EventEmitter
-const Pipeline = require('ioredis-auto-pipeline')
 
 function MQEmitterRedis (opts) {
   if (!(this instanceof MQEmitterRedis)) {
     return new MQEmitterRedis(opts)
   }
 
-  opts = opts || {}
+  opts = { ...opts }
+
+  opts.enableAutoPipelining = true
 
   this._opts = opts
 
   this.subConn = opts.subConn || new Redis(opts.connectionString || opts)
   this.pubConn = opts.pubConn || new Redis(opts.connectionString || opts)
 
-  this._pipeline = Pipeline(this.pubConn)
-
   this._topics = {}
 
-  this._cache = new LRU({
+  this._cache = new LRUCache({
     max: 10000,
     ttl: 60 * 1000 // one minute
   })
@@ -159,7 +158,7 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     msg
   }
 
-  this._pipeline.publish(msg.topic, msgpack.encode(packet)).then(() => done()).catch(done)
+  this.pubConn.publish(msg.topic, msgpack.encode(packet)).then(() => done()).catch(done)
 }
 
 MQEmitterRedis.prototype.removeListener = function (topic, cb, done) {
