@@ -8,7 +8,7 @@
     "hyperid": "^3.2.0",
     "inherits": "^2.0.4",
     "ioredis": "^5.4.1",
-    "lru-cache": "^10.2.2",
+    "lru-cache": "^11.0.0",
     "mqemitter": "^6.0.2",
     "msgpack-lite": "^0.1.26"
   },
