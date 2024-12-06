@@ -29,6 +29,13 @@ expectType<MQEmitterRedis>(
   })
 );
 
+expectType<MQEmitterRedis>(
+  mqEmitterRedis({
+    maxLRUCache: 100,
+    ttlLRUCache: 10000,
+  })
+);
+
 function listener(message: Message, done: () => void) {}
 
 expectType<MQEmitterRedis>(mqEmitterRedis().on('topic', listener));

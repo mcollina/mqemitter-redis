@@ -10,10 +10,15 @@ export interface MQEmitterOptions {
   connectionString?: string;
 }
 
+export interface LRUCacheOptions {
+  ttlLRUCache?: number;// Time to live for the LRU cache in milliseconds
+  maxLRUCache?: number;// Maximum number of items in the LRU cache
+}
+
 export type Message = Record<string, any> & { topic: string };
 
 export interface MQEmitterRedis extends MQEmitter {
-  new (options?: MQEmitterOptions & RedisOptions): MQEmitterRedis;
+  new (options?: MQEmitterOptions & RedisOptions & LRUCacheOptions): MQEmitterRedis;
   current: number;
   concurrent: number;
   on(
@@ -31,7 +36,7 @@ export interface MQEmitterRedis extends MQEmitter {
 }
 
 declare function MQEmitterRedis(
-  options?: MQEmitterOptions & RedisOptions
+  options?: MQEmitterOptions & RedisOptions & LRUCacheOptions
 ): MQEmitterRedis;
 
 export default MQEmitterRedis;

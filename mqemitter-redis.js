@@ -25,8 +25,8 @@ function MQEmitterRedis (opts) {
   this._topics = {}
 
   this._cache = new LRUCache({
-    max: 10000,
-    ttl: 60 * 1000 // one minute
+    max: opts.maxLRUCache || 10000, // default: 10k
+    ttl: opts.ttlLRUCache || 60 * 1000 // default: one minute
   })
 
   this.state = new EE()
