@@ -4,6 +4,9 @@
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "types": "types/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "hyperid": "^3.3.0",
     "inherits": "^2.0.4",
