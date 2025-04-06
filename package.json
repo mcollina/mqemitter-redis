@@ -18,6 +18,7 @@
   "devDependencies": {
     "@fastify/pre-commit": "^2.2.0",
     "eslint": "^9.24.0",
+    "faucet": "^0.0.4",
     "neostandard": "^0.12.1",
     "tape": "^5.9.0",
     "tsd": "^0.31.2"
@@ -25,7 +26,7 @@
   "scripts": {
     "lint:fix": "eslint --fix",
     "lint": "eslint",
-    "unit": "tape test/*.js",
+    "unit": "tape test/*.js | faucet",
     "test:types": "tsd",
     "test": "npm run lint && npm run unit && tsd",
     "redis": "docker run -d --rm --name redis -p 6379:6379 redis:7"
