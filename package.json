@@ -13,16 +13,19 @@
     "msgpack-lite": "^0.1.26"
   },
   "devDependencies": {
-    "faucet": "^0.0.4",
-    "pre-commit": "^1.2.2",
-    "safe-buffer": "^5.2.1",
-    "standard": "^17.1.0",
+    "@fastify/pre-commit": "^2.2.0",
+    "eslint": "^9.24.0",
+    "neostandard": "^0.12.1",
     "tape": "^5.0.1",
     "tsd": "^0.31.0"
   },
   "scripts": {
+    "lint:fix": "eslint --fix",
+    "lint": "eslint",
+    "unit": "tape test/*.js",
     "test:types": "tsd",
-    "test": "standard && tape test/*.js | faucet && tsd"
+    "test": "npm run lint && npm run unit && tsd",
+    "redis": "docker run -d --rm --name redis -p 6379:6379 redis:7"
   },
   "pre-commit": "test",
   "repository": {
