@@ -4,25 +4,32 @@
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "types": "types/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
-    "hyperid": "^3.2.0",
+    "hyperid": "^3.3.0",
     "inherits": "^2.0.4",
-    "ioredis": "^5.4.1",
-    "lru-cache": "^10.2.2",
+    "ioredis": "^5.6.0",
+    "lru-cache": "^11.1.0",
     "mqemitter": "^6.0.2",
     "msgpack-lite": "^0.1.26"
   },
   "devDependencies": {
+    "@fastify/pre-commit": "^2.2.0",
+    "eslint": "^9.24.0",
     "faucet": "^0.0.4",
-    "pre-commit": "^1.2.2",
-    "safe-buffer": "^5.2.1",
-    "standard": "^17.1.0",
-    "tape": "^5.0.1",
-    "tsd": "^0.31.0"
+    "neostandard": "^0.12.1",
+    "tape": "^5.9.0",
+    "tsd": "^0.31.2"
   },
   "scripts": {
+    "lint:fix": "eslint --fix",
+    "lint": "eslint",
+    "unit": "tape test/*.js | faucet",
     "test:types": "tsd",
-    "test": "standard && tape test/*.js | faucet && tsd"
+    "test": "npm run lint && npm run unit && tsd",
+    "redis": "docker run -d --rm --name redis -p 6379:6379 redis:7"
   },
   "pre-commit": "test",
   "repository": {

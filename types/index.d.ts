@@ -1,5 +1,5 @@
-import type { RedisOptions } from 'ioredis';
-import type { MQEmitter } from 'mqemitter';
+import type { RedisOptions } from 'ioredis'
+import type { MQEmitter } from 'mqemitter'
 
 export interface MQEmitterOptions {
   concurrency?: number;
@@ -15,7 +15,7 @@ export interface LRUCacheOptions {
   maxLRUCache?: number;// Maximum number of items in the LRU cache
 }
 
-export type Message = Record<string, any> & { topic: string };
+export type Message = Record<string, any> & { topic: string }
 
 export interface MQEmitterRedis extends MQEmitter {
   new (options?: MQEmitterOptions & RedisOptions & LRUCacheOptions): MQEmitterRedis;
@@ -35,8 +35,8 @@ export interface MQEmitterRedis extends MQEmitter {
   close(callback: () => void): void;
 }
 
-declare function MQEmitterRedis(
+declare function MQEmitterRedis (
   options?: MQEmitterOptions & RedisOptions & LRUCacheOptions
-): MQEmitterRedis;
+): MQEmitterRedis
 
-export default MQEmitterRedis;
+export default MQEmitterRedis
