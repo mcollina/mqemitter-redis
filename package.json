@@ -12,7 +12,7 @@
     "inherits": "^2.0.4",
     "ioredis": "^5.6.0",
     "lru-cache": "^11.1.0",
-    "mqemitter": "^6.0.2",
+    "mqemitter": "^7.0.0",
     "msgpack-lite": "^0.1.26"
   },
   "devDependencies": {
