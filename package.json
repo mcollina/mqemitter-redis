@@ -10,23 +10,21 @@
   "dependencies": {
     "hyperid": "^3.3.0",
     "inherits": "^2.0.4",
-    "ioredis": "^5.6.0",
+    "ioredis": "^5.6.1",
     "lru-cache": "^11.1.0",
-    "mqemitter": "^6.0.2",
+    "mqemitter": "^7.0.0",
     "msgpack-lite": "^0.1.26"
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.2.0",
     "eslint": "^9.24.0",
-    "faucet": "^0.0.4",
     "neostandard": "^0.12.1",
-    "tape": "^5.9.0",
-    "tsd": "^0.31.2"
+    "tsd": "^0.32.0"
   },
   "scripts": {
     "lint:fix": "eslint --fix",
     "lint": "eslint",
-    "unit": "tape test/*.js | faucet",
+    "unit": "node --test test/*.js",
     "test:types": "tsd",
     "test": "npm run lint && npm run unit && tsd",
     "redis": "docker run -d --rm --name redis -p 6379:6379 redis:7"
