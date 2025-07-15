@@ -3,7 +3,7 @@
   "version": "7.0.0",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
-  "types": "types/index.d.ts",
+  "types": "mqemitter-redis.d.ts",
   "engines": {
     "node": ">=20"
   },
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.2.0",
+    "@types/node": "^24.0.14",
     "eslint": "^9.24.0",
     "neostandard": "^0.12.1",
     "tsd": "^0.32.0"
@@ -26,6 +27,7 @@
     "lint": "eslint",
     "unit": "node --test --test-concurrency=1 test/*.js",
     "test:types": "tsd",
+    "typescript": "tsc --project ./test/types/tsconfig.json",
     "test": "npm run lint && npm run unit && tsd",
     "redis": "docker run -d --rm --name redis -p 6379:6379 redis:7"
   },
