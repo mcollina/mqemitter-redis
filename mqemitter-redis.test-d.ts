@@ -1,5 +1,5 @@
 import { expectError, expectType } from 'tsd'
-import mqEmitterRedis, { Message, MQEmitterRedis } from '.'
+import mqEmitterRedis, { Message, MQEmitterRedis } from './mqemitter-redis.js'
 
 expectType<MQEmitterRedis>(mqEmitterRedis())
 
