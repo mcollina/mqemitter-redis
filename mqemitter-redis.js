@@ -23,13 +23,13 @@ function MQEmitterRedis (opts) {
   this.pubConn = opts.pubConn || new Redis(opts.connectionString || opts)
 
   this._topics = {}
-  this._ignoredTopics = [
-    /**
-     * Sentinels emit hello messages into this channel
-     * @link https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/#sentinels-and-replicas-auto-discovery
-     */
-    '__sentinel__:hello'
-  ]
+  this._ignoredTopicsSet = new Set()
+
+  /**
+   * Sentinels emit hello messages into this channel
+   * @link https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/#sentinels-and-replicas-auto-discovery
+   */
+  this._ignoredTopicsSet.add('__sentinel__:hello')
 
   this._cache = new LRUCache({
     max: opts.maxLRUCache || 10000, // default: 10k
@@ -49,7 +49,7 @@ function MQEmitterRedis (opts) {
   this._onError = onError
 
   function handler (sub, topic, payload) {
-    if (that._ignoredTopics.includes(topic.toString('utf8'))) return
+    if (that._ignoredTopicsSet.has(topic.toString('utf8'))) return
 
     const packet = msgpack.decode(payload)
     if (!that._cache.get(packet.id)) {

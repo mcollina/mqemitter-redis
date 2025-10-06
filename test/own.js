@@ -167,7 +167,7 @@ test('ignored topics', async function (t) {
   e.on('+', function () {
     t.assert.fail('the message should not be emitted')
   }, function () {
-    e._ignoredTopics.forEach(topic => {
+    e._ignoredTopicsSet.forEach(topic => {
       e.emit({ topic }, noop)
     })
   })
@@ -186,10 +186,10 @@ test('empty ignored topics', async function (t) {
   t.plan(3)
 
   const e = redis()
-  const originalIgnoredTopics = e._ignoredTopics
-  const totalIgnoredTopics = originalIgnoredTopics.length
+  const originalIgnoredTopics = e._ignoredTopicsSet
+  const totalIgnoredTopics = originalIgnoredTopics.size
   let ignoredTopics = 0
-  e._ignoredTopics = []
+  e._ignoredTopicsSet = new Set()
 
   e.on('+', function () {
     ignoredTopics++
@@ -203,7 +203,7 @@ test('empty ignored topics', async function (t) {
     setTimeout(() => {
       e.close(function (err) {
         t.assert.ok(!err)
-        t.assert.notEqual(originalIgnoredTopics, 0)
+        t.assert.notEqual(originalIgnoredTopics.size, 0)
         t.assert.equal(ignoredTopics, totalIgnoredTopics)
         resolve()
       })
