@@ -18,7 +18,7 @@
   "devDependencies": {
     "@fastify/pre-commit": "^2.2.0",
     "@types/node": "^24.0.14",
-    "eslint": "^9.24.0",
+    "eslint": "^10.0.2",
     "neostandard": "^0.12.1",
     "tsd": "^0.33.0"
   },
