@@ -22,7 +22,7 @@ describe('MQEmitterRedis', () => {
           separator: '/',
           wildcardOne: '+',
           wildcardSome: '#',
-          connectionString: 'redis://:authpassword@127.0.0.1:6380/4'
+          connectionString: 'redis://:authpassword@127.0.0.1:6380/4',
         })
       ).type.toBe<MQEmitterRedis>()
     })
@@ -34,9 +34,8 @@ describe('MQEmitterRedis', () => {
           matchEmptyLevels: true,
           host: 'localhost',
           port: 6379,
-          // eslint-disable-next-line n/handle-callback-err
-          reconnectOnError: (error: Error) => true,
-          retryStrategy: (times: number) => times * 1.5
+          reconnectOnError: (_error: Error) => true,
+          retryStrategy: (times: number) => times * 1.5,
         })
       ).type.toBe<MQEmitterRedis>()
     })
@@ -45,7 +44,7 @@ describe('MQEmitterRedis', () => {
       expect(
         mqEmitterRedis({
           maxLRUCache: 100,
-          ttlLRUCache: 10000
+          ttlLRUCache: 10000,
         })
       ).type.toBe<MQEmitterRedis>()
     })
@@ -61,14 +60,16 @@ describe('MQEmitterRedis', () => {
   })
 
   describe('methods', () => {
-    function listener (message: Message, done: () => void) {}
+    function listener (_message: Message, _done: () => void) {}
 
     it('on returns the instance', () => {
       expect(mqEmitterRedis().on('topic', listener)).type.toBe<MQEmitterRedis>()
     })
 
     it('removeListener returns void', () => {
-      expect(mqEmitterRedis().removeListener('topic', listener)).type.toBe<void>()
+      expect(
+        mqEmitterRedis().removeListener('topic', listener)
+      ).type.toBe<void>()
     })
 
     it('emit rejects null', () => {
@@ -76,7 +77,9 @@ describe('MQEmitterRedis', () => {
     })
 
     it('emit returns void', () => {
-      expect(mqEmitterRedis().emit({ topic: 'test', prop1: 'prop1' })).type.toBe<void>()
+      expect(
+        mqEmitterRedis().emit({ topic: 'test', prop1: 'prop1' })
+      ).type.toBe<void>()
     })
 
     it('close returns void', () => {
