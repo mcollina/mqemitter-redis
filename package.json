@@ -20,7 +20,7 @@
     "@types/node": "^24.0.14",
     "eslint": "^9.24.0",
     "neostandard": "^0.12.1",
-    "tstyche": "^7.1.0"
+    "tstyche": "^7.2.1"
   },
   "scripts": {
     "lint:fix": "eslint --fix",
