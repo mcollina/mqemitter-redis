@@ -210,3 +210,69 @@ test('empty ignored topics', async function (t) {
     }, 100)
   })
 })
+
+test('bypassRedis delivers locally without publishing', async function (t) {
+  t.plan(2)
+
+  const local = redis({
+    bypassRedis: function (topic) {
+      return topic.startsWith('local/')
+    }
+  })
+  const remote = redis()
+
+  const localTopics = []
+  const remoteTopics = []
+
+  await new Promise(resolve => {
+    local.on('+/1', function (msg, cb) {
+      localTopics.push(msg.topic)
+      cb()
+    }, function () {
+      remote.on('+/1', function (msg, cb) {
+        remoteTopics.push(msg.topic)
+        cb()
+      }, function () {
+        local.emit({ topic: 'local/1' }, function () {
+          local.emit({ topic: 'shared/1' }, function () {
+            setTimeout(resolve, 100)
+          })
+        })
+      })
+    })
+  })
+
+  t.assert.deepEqual(localTopics.sort(), ['local/1', 'shared/1'])
+  t.assert.deepEqual(remoteTopics, ['shared/1'])
+
+  await new Promise(resolve => local.close(resolve))
+  await new Promise(resolve => remote.close(resolve))
+})
+
+test('ECONNREFUSED is not surfaced while ioredis retries', async function (t) {
+  t.plan(1)
+
+  const subConn = new Redis({ lazyConnect: true })
+  const pubConn = new Redis({ lazyConnect: true })
+  const e = redis({ subConn, pubConn })
+
+  const seen = []
+  e.state.on('error', function (err) {
+    seen.push(err.code)
+  })
+
+  function fakeError (code) {
+    const err = new Error(code)
+    err.code = code
+    return err
+  }
+
+  subConn.emit('error', fakeError('ECONNREFUSED'))
+  pubConn.emit('error', fakeError('ECONNREFUSED'))
+  subConn.emit('error', fakeError('ECONNRESET'))
+  pubConn.emit('error', fakeError('ENOTFOUND'))
+
+  t.assert.deepEqual(seen, ['ECONNRESET', 'ENOTFOUND'])
+
+  await new Promise(resolve => e.close(resolve))
+})

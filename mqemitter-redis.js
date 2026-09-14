@@ -92,10 +92,6 @@ function MQEmitterRedis (opts) {
 
   this._opts.regexWildcardOne = new RegExp(this._opts.wildcardOne.replace(/([/,!\\^${}[\]().*+?|<>\-&])/g, '\\$&'), 'g')
   this._opts.regexWildcardSome = new RegExp((this._opts.matchEmptyLevels ? this._opts.separator.replace(/([/,!\\^${}[\]().*+?|<>\-&])/g, '\\$&') + '?' : '') + this._opts.wildcardSome.replace(/([/,!\\^${}[\]().*+?|<>\-&])/g, '\\$&'), 'g')
-
-  if (typeof this._opts.bypassRedis !== 'function') {
-    this._opts.bypassRedis = null
-  }
 }
 
 inherits(MQEmitterRedis, MQEmitter)
@@ -172,18 +168,14 @@ MQEmitterRedis.prototype.emit = function (msg, done) {
     return done(err)
   }
 
+  // deliver to local listeners only, without publishing to Redis
+  if (this._opts.bypassRedis && this._opts.bypassRedis(msg.topic, msg.payload)) {
+    return this._emit(msg, done)
+  }
+
   const packet = {
     id: hyperid(),
     msg
-  }
-
-  if (this._opts.bypassRedis !== null && this._opts.bypassRedis(msg.topic, msg.payload)) {
-    if (!this._cache.get(packet.id)) {
-      this._emit(packet.msg)
-    }
-    this._cache.set(packet.id, true)
-    done()
-    return
   }
 
   this.pubConn.publish(msg.topic, msgpack.encode(packet)).then(() => done()).catch(done)

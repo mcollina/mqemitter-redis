@@ -9,6 +9,8 @@ declare namespace MQEmitterRedis {
     wildcardOne?: string;
     wildcardSome?: string;
     connectionString?: string;
+    /** Return true to deliver the message to local listeners only, without publishing it to Redis. */
+    bypassRedis?: (topic: string, payload: any) => boolean;
   }
 
   export interface LRUCacheOptions {

@@ -16,6 +16,9 @@ Install
 $ npm install mqemitter-redis --save
 ```
 
+This fork is published as `@pelicarno/mqemitter-redis` and tracks
+[mcollina/mqemitter-redis](https://github.com/mcollina/mqemitter-redis) plus the `bypassRedis` option.
+
 Example
 -------
 
@@ -64,6 +67,13 @@ It takes all the same options of [ioredis](http://npm.im/ioredis),
 which is used internally to connect to Redis.
 
 This constructor creates two connections to Redis.
+
+Additional option:
+
+* `bypassRedis`: an optional function `(topic, payload) => boolean`.
+  When it returns `true` the message is delivered to local listeners only
+  and is not published to Redis. Useful when some topics are only relevant
+  to the current process.
 
 Acknowledgements
 ----------------

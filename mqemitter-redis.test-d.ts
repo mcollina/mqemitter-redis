@@ -37,6 +37,12 @@ expectType<MQEmitterRedis>(
   })
 )
 
+expectType<MQEmitterRedis>(
+  mqEmitterRedis({
+    bypassRedis: (topic: string, payload: any) => topic.startsWith('local/'),
+  })
+)
+
 function listener (message: Message, done: () => void) {}
 
 expectType<MQEmitterRedis>(mqEmitterRedis().on('topic', listener))
