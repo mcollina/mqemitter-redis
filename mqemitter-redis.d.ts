@@ -1,4 +1,4 @@
-import type { RedisOptions } from 'ioredis'
+import type { Redis, RedisOptions } from 'ioredis'
 import type { MQEmitter } from 'mqemitter'
 
 declare namespace MQEmitterRedis {
@@ -9,6 +9,8 @@ declare namespace MQEmitterRedis {
     wildcardOne?: string;
     wildcardSome?: string;
     connectionString?: string;
+    subConn?: Redis;
+    pubConn?: Redis;
   }
 
   export interface LRUCacheOptions {

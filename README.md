@@ -63,7 +63,18 @@ Creates a new instance of mqemitter-redis.
 It takes all the same options of [ioredis](http://npm.im/ioredis),
 which is used internally to connect to Redis.
 
-This constructor creates two connections to Redis.
+This constructor creates two connections to Redis, unless pre-built
+connections are supplied via `subConn` and `pubConn`. Use this to reuse
+the full configuration (tls, auth, sentinels, …) of an existing client:
+
+```js
+const Redis = require('ioredis')
+const redis = new Redis({ host: 'localhost', tls: {} })
+const mq = require('mqemitter-redis')({
+  subConn: redis.duplicate(),
+  pubConn: redis.duplicate()
+})
+```
 
 Acknowledgements
 ----------------
