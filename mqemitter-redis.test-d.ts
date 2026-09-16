@@ -1,4 +1,5 @@
 import { expectError, expectType } from 'tsd'
+import { Redis } from 'ioredis'
 import mqEmitterRedis, { Message, MQEmitterRedis } from './mqemitter-redis.js'
 
 expectType<MQEmitterRedis>(mqEmitterRedis())
@@ -34,6 +35,13 @@ expectType<MQEmitterRedis>(
   mqEmitterRedis({
     maxLRUCache: 100,
     ttlLRUCache: 10000,
+  })
+)
+
+expectType<MQEmitterRedis>(
+  mqEmitterRedis({
+    subConn: new Redis(),
+    pubConn: new Redis(),
   })
 )
 
