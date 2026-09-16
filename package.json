@@ -1,6 +1,6 @@
 {
   "name": "mqemitter-redis",
-  "version": "7.1.0",
+  "version": "7.2.0",
   "description": "Redis-based MQEmitter",
   "main": "mqemitter-redis.js",
   "types": "mqemitter-redis.d.ts",
@@ -20,7 +20,7 @@
     "@types/node": "^24.0.14",
     "eslint": "^9.24.0",
     "neostandard": "^0.12.1",
-    "tsd": "^0.32.0"
+    "tsd": "^0.33.0"
   },
   "scripts": {
     "lint:fix": "eslint --fix",
