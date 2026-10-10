@@ -2,7 +2,7 @@
 /* eslint no-undef: 0 */
 /// reference types="node"
 
-import MQEmitter, { Message } from '../../mqemitter-redis.js'
+import MQEmitter, { Message } from '../../types/mqemitter-redis.js'
 
 const noop = function () {}
 
