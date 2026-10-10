@@ -10,7 +10,7 @@
   "dependencies": {
     "hyperid": "^3.3.0",
     "inherits": "^2.0.4",
-    "ioredis": "^5.6.1",
+    "ioredis": "^6.0.0",
     "lru-cache": "^11.1.0",
     "mqemitter": "^7.0.0",
     "msgpack-lite": "^0.1.26"
